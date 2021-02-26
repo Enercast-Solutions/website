@@ -1,0 +1,23 @@
+{
+    "dev": {
+        "awscloudformation": {
+            "AuthRoleName": "amplify-enercast-dev-143857-authRole",
+            "UnauthRoleArn": "arn:aws:iam::460407672535:role/amplify-enercast-dev-143857-unauthRole",
+            "AuthRoleArn": "arn:aws:iam::460407672535:role/amplify-enercast-dev-143857-authRole",
+            "Region": "us-east-2",
+            "DeploymentBucketName": "amplify-enercast-dev-143857-deployment",
+            "UnauthRoleName": "amplify-enercast-dev-143857-unauthRole",
+            "StackName": "amplify-enercast-dev-143857",
+            "StackId": "arn:aws:cloudformation:us-east-2:460407672535:stack/amplify-enercast-dev-143857/45b86130-786a-11eb-bc5a-062eed804cba",
+            "AmplifyAppId": "d1qww3se6uq81c"
+        },
+        "categories": {
+            "hosting": {
+                "amplifyhosting": {
+                    "appId": "d1qww3se6uq81c",
+                    "type": "manual"
+                }
+            }
+        }
+    }
+}
