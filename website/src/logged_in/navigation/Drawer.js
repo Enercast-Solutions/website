@@ -17,14 +17,14 @@ import DashboardIcon from '@material-ui/icons/Dashboard';
 
 const styles = theme => ({
     list: {
-        width: 250,
+        width: 225,
     },
     fullList: {
         width: 'auto',
     },
     noDecoration: {
         textDecoration: "none !important",
-        color: "#000000"
+        color: theme.palette.common.black
     },
 });
 
@@ -37,88 +37,89 @@ function SwipeableTemporaryDrawer(props) {
             onClick={() => {setOpen(!open)}}
             onKeyDown={() => {setOpen(!open)}}
         >
-        <List>
-            <Link
-                key="dashboard_link"
-                to={"/c/dashboard"}
-                className={props.classes.noDecoration}
-            >
-                <ListItem
-                    button
-                    key="dashboard"
+            <List className={props.classes.list}>
+                <Link
+                    key="dashboard_link"
+                    to={"/c/dashboard"}
+                    className={props.classes.noDecoration}
                 >
-                    <ListItemIcon>
-                        <DashboardIcon />
-                    </ListItemIcon>
+                    <ListItem
+                        button
+                        key="dashboard"
+                    >
+                        <ListItemIcon>
+                            <DashboardIcon />
+                        </ListItemIcon>
 
-                    <ListItemText
-                        primary="Dashboard"
-                    />
-                </ListItem>
-            </Link>
+                        <ListItemText
+                            primary="Dashboard"
+                        />
+                    </ListItem>
+                </Link>
 
-            <Link
-                key="create_prediction_link"
-                to={"/c/prediction_tool"}
-                className={props.classes.noDecoration}
-            >
-                <ListItem
-                    button
-                    key="create_prediction"
+                <Link
+                    key="create_prediction_link"
+                    to={"/c/prediction_tool"}
+                    className={props.classes.noDecoration}
                 >
-                    <ListItemIcon>
-                        <AddIcon />
-                    </ListItemIcon>
+                    <ListItem
+                        button
+                        key="create_prediction"
+                    >
+                        <ListItemIcon>
+                            <AddIcon />
+                        </ListItemIcon>
 
-                    <ListItemText
-                        primary="Create Prediction"
-                    />
-                </ListItem>
-            </Link>
+                        <ListItemText
+                            primary="Create Prediction"
+                        />
+                    </ListItem>
+                </Link>
 
-            <Link
-                key="logs_link"
-                to={"/c/logs"}
-                className={props.classes.noDecoration}
-            >
-                <ListItem
-                    button
-                    key="logs"
+                <Link
+                    key="logs_link"
+                    to={"/c/logs"}
+                    className={props.classes.noDecoration}
                 >
-                    <ListItemIcon>
-                        <HistoryIcon />
-                    </ListItemIcon>
+                    <ListItem
+                        button
+                        key="logs"
+                    >
+                        <ListItemIcon>
+                            <HistoryIcon />
+                        </ListItemIcon>
 
-                    <ListItemText
-                        primary="Past Predictions"
-                    />
-                </ListItem>
-            </Link>
-        </List>
-        <Divider />
-      <List>
+                        <ListItemText
+                            primary="Past Predictions"
+                        />
+                    </ListItem>
+                </Link>
+            </List>
 
-        <Link
-          key="contact_us_link"
-          to={"/contact_us"}
-          className={props.classes.noDecoration}
-        >
-          <ListItem
-            button
-            key="contact_us"
-          >
-            <ListItemIcon>
-              <HelpIcon />
-            </ListItemIcon>
+            <Divider />
 
-            <ListItemText
-              primary="Contact Us"
-            />
-          </ListItem>
-        </Link>
-      </List>
-    </div>
-  );
+            <List>
+                <Link
+                    key="contact_us_link"
+                    to={"/contact_us"}
+                    className={props.classes.noDecoration}
+                >
+                    <ListItem
+                        button
+                        key="contact_us"
+                    >
+                        <ListItemIcon>
+                            <HelpIcon />
+                        </ListItemIcon>
+
+                        <ListItemText
+                            primary="Contact Us"
+                        />
+                    </ListItem>
+                </Link>
+            </List>
+        </div>
+    );
 
     return (
         <div>

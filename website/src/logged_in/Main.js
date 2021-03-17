@@ -10,8 +10,7 @@ import { useState } from "react";
 
 const styles = theme => ({
   main: {
-    backgroundColor: theme.palette.common.black,
-    marginLeft: theme.spacing(9),
+    backgroundColor: theme.palette.common.white,
     transition: theme.transitions.create(["width", "margin"], {
       easing: theme.transitions.easing.sharp,
       duration: theme.transitions.duration.leavingScreen

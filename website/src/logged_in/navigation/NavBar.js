@@ -25,6 +25,7 @@ import MenuItem from '@material-ui/core/MenuItem';
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
 import SwipeableTemporaryDrawer from './Drawer';
+import Image from "../../assets/logo_navbar_middle.png";
 
 const styles = theme => ({
     appBar: {
@@ -99,9 +100,8 @@ const styles = theme => ({
         paddingBottom: theme.spacing(2)
     },
     cover: {
-        width: "12%",
-        height: "12%",
-        marginRight: theme.spacing(1)
+        width: "25%",
+        height: "25%"
     },
     menu: {
         color: theme.palette.common.white
@@ -122,6 +122,19 @@ function NavBar(props) {
             <AppBar position="sticky" className={props.classes.appBar}>
                 <Toolbar className={props.classes.appBarToolbar}>
                     <SwipeableTemporaryDrawer />
+
+                    <Box
+                        display="flex"
+                        justifyContent="flex-end"
+                        alignItems="center"
+                        width="100%"
+                    >
+                        <CardMedia
+                            component="img"
+                            className={props.classes.cover}
+                            src={Image}
+                        />
+                    </Box>
 
                     <Box
                         display="flex"
