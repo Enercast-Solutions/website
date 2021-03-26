@@ -2,6 +2,10 @@
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
+## Error handling
+
+- If you encounter an access denied error, please see https://stackoverflow.com/questions/63546586/access-denied-error-from-protected-routes-from-react-app-hosted-on-aws-amplify for information how to solve the issue.
+
 ## Available Scripts
 
 In the project directory, you can run:

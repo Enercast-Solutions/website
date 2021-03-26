@@ -17,6 +17,7 @@ import InputLabel from '@material-ui/core/InputLabel';
 import MenuItem from '@material-ui/core/MenuItem';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import EnercastSolutionsAPI from '../../shared/API';
+import { loadUserFromCache } from '../../shared/auth';
 import DateFnsUtils from '@date-io/date-fns';
 import NumberFormat from 'react-number-format';
 import format from 'date-fns/format';
@@ -52,10 +53,6 @@ const styles = theme => ({
     inputPadTop: {
         marginTop: theme.spacing(3)
     },
-    formControl: {
-        margin: theme.spacing(1),
-        minWidth: 240,
-    },
     submitButton: {
         marginTop: theme.spacing(3),
         minWidth: 240,
@@ -82,7 +79,7 @@ function CreatePrediction(props) {
     async function createNewPrediction() {
         setLoading(true);
 
-        const api = new EnercastSolutionsAPI();//await loadUserFromCache());
+        const api = new EnercastSolutionsAPI(await loadUserFromCache());
         api.createPrediction(name, forecastedAttendance, sqFt, specializedEquipment, format(startDate, "yyyy-MM-dd"), format(endDate, "yyyy-MM-dd"), numSetupDays, numTeardownDays)
             .then((response) => {
                 return response.json();
@@ -172,7 +169,7 @@ function CreatePrediction(props) {
                                     <Grid item xs={1} />
 
                                     <Grid item xs={6}>
-                                        <FormControl className={props.classes.formControl} fullWidth>
+                                        <FormControl fullWidth>
                                             <InputLabel id="specialized-equipment-label">Utilizing specialized Equipment?</InputLabel>
                                             <Select
                                                 labelId="specialized-equipment-label"

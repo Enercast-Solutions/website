@@ -41,4 +41,4 @@ Main.propTypes = {
     classes: PropTypes.object.isRequired
 };
 
-export default withAuthenticator(withStyles(styles, { withTheme: true })(Main));
+export default withStyles(styles, { withTheme: true })(Main);
