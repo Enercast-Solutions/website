@@ -116,20 +116,20 @@ function ContactUs(props) {
                                     </Grid>
 
                                     <Grid item xs={12}>
-                                    <Box
-                                        display="flex"
-                                        justifyContent="flex-end"
-                                        alignItems="center"
-                                        width="100%"
-                                    >
-                                        <Button
-                                            variant="contained"
-                                            color="primary"
-                                            onClick={submitContactUs}
-                                            className={props.classes.submitButton}
+                                        <Box
+                                            display="flex"
+                                            justifyContent="flex-end"
+                                            alignItems="center"
+                                            width="100%"
                                         >
-                                            {loading && <CircularProgress color="white" />} {submitted ? "Successfully Submitted" : "Submit"}
-                                        </Button>
+                                            <Button
+                                                variant="contained"
+                                                color="primary"
+                                                onClick={submitContactUs}
+                                                className={props.classes.submitButton}
+                                            >
+                                                {loading && <CircularProgress color="white" />} {submitted ? "Successfully Submitted" : "Submit"}
+                                            </Button>
                                         </Box>
                                     </Grid>
                                 </Grid>

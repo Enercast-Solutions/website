@@ -1,4 +1,5 @@
 import React from 'react';
+import { useState } from 'react';
 import { withStyles } from '@material-ui/core';
 import Grid from '@material-ui/core/Grid';
 import Card from '@material-ui/core/Card';
@@ -9,6 +10,10 @@ import Typography from '@material-ui/core/Typography';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
+import CircularProgress from '@material-ui/core/CircularProgress';
+import { Auth } from 'aws-amplify';
+import EnercastSolutionsAPI from '../../shared/API';
+import { loadUserFromCache } from '../../shared/auth';
 
 const styles = theme => ({
     root: {
@@ -33,42 +38,66 @@ const styles = theme => ({
 });
 
 function Dashboard(props) {
-    // TODO: Pull data from the API
-    var listItems = [
-        ["1", "4,235.36 kWh", "$5000.00"],
-        ["2", "4,235.36 kWh", "$5000.00"],
-        ["3", "4,235.36 kWh", "$5000.00"],
-        ["4", "4,235.36 kWh", "$5000.00"],
-        ["5", "13,235.36 kWh", "$5000.00"],
-        ["6", "4,235.36 kWh", "$5000.00"],
-        ["7", "4,235.36 kWh", "$5000.00"]
-    ];
-    var renderedList = listItems.map((item) => {
-        return (
-            <ListItem>
-                <Grid container spacing={3}>
-                    <Grid item xs={4}>
-                        {item[0]}
-                    </Grid>
+    const [loading, setLoading] = useState(true);
+    const [user, setUser] = useState({});
+    const [profile, setProfile] = useState(null);
 
-                    <Grid item xs={4}>
-                        {item[1]}
-                    </Grid>
+    async function loadUserFromAmplify() {
+        if (!profile) {
+            const profileInfo = await Auth.currentUserInfo();
+            setProfile(profileInfo);
+        }
+    }
 
-                    <Grid item xs={4}>
-                        {item[2]}
+    async function loadProjectInformation(selectedProjectContext, forceReload) {
+        const api = new EnercastSolutionsAPI(await loadUserFromCache());
+        api.getUser()
+            .then((response) => {
+                return response.json();
+            })
+            .then((data) => {
+                setUser(data["user"]);
+
+                setLoading(false);
+            })
+            .catch((e) => {
+                console.log(e);
+
+                setLoading(false);
+            });
+    }
+
+    if (loading) {
+        loadProjectInformation();
+        loadUserFromAmplify();
+    }
+
+    try {
+        var renderedList = user["energy_consumption_predictions"].map((item) => {
+            return (
+                <ListItem>
+                    <Grid container spacing={3}>
+                        <Grid item xs={6}>
+                            {item["prediction_parameters"]["event_name"]}
+                        </Grid>
+
+                        <Grid item xs={6}>
+                            {item["prediction_results"]["energy_consumption_kwh"].split(".")[0]}
+                        </Grid>
                     </Grid>
-                </Grid>
-            </ListItem>
-        );
-    });
+                </ListItem>
+            );
+        });
+    } catch {
+
+    }
 
     return (
         <div className={props.classes.root}>
             <Grid container spacing={3}>
                 <Grid item xs={12}>
                     <Typography className={props.classes.title}>
-                        Dashboard
+                        Dashboard {loading && <CircularProgress color="white" />}
                     </Typography>
                 </Grid>
 
@@ -79,13 +108,13 @@ function Dashboard(props) {
                                 PROFILE
                             </Typography>
 
-                            <Typography className={props.classes.username}>
-                                TODO: username
-                            </Typography>
-
-                            <Typography className={props.classes.position}>
-                                TODO: position
-                            </Typography>
+                            {profile && (
+                                <>
+                                    <Typography className={props.classes.username}>
+                                        Username: {profile.attributes.email}
+                                    </Typography>
+                                </>
+                            )}
                         </CardContent>
                     </Card>
 
@@ -109,17 +138,17 @@ function Dashboard(props) {
                                 EVENT SPACE
                             </Typography>
 
-                            <Typography className={props.classes.username}>
-                                Georgia World Conference Center
-                            </Typography>
+                            {user && user["cc_info"] && (
+                                <>
+                                    <Typography className={props.classes.username}>
+                                        Name: {user["cc_info"]["name"]}
+                                    </Typography>
 
-                            <Typography className={props.classes.username}>
-                                Location: Atlanta, Georgia
-                            </Typography>
-
-                            <Typography className={props.classes.username}>
-                                SQ Footage: 1.5 million
-                            </Typography>
+                                    <Typography className={props.classes.username}>
+                                        SQ Footage: {user["cc_info"]["sq_footage"]}
+                                    </Typography>
+                                </>
+                            )}
                         </CardContent>
                     </Card>
                 </Grid>

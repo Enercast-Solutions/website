@@ -3,7 +3,7 @@ import '../config.js';
 
 export async function getUser() {
     return await Auth.currentAuthenticatedUser({
-        bypassCache: false
+        bypassCache: true
     });
 }
 
