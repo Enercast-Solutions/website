@@ -8,12 +8,13 @@ import Divider from '@material-ui/core/Divider';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
-import HelpIcon from '@material-ui/icons/Help';
 import ArrowForwardIosIcon from '@material-ui/icons/ArrowForwardIos';
 import AddIcon from '@material-ui/icons/Add';
 import IconButton from '@material-ui/core/IconButton';
 import HistoryIcon from '@material-ui/icons/History';
 import DashboardIcon from '@material-ui/icons/Dashboard';
+import ContactSupportIcon from '@material-ui/icons/ContactSupport';
+import AccountBoxIcon from '@material-ui/icons/AccountBox';
 
 const styles = theme => ({
     list: {
@@ -100,8 +101,31 @@ function SwipeableTemporaryDrawer(props) {
 
             <List>
                 <Link
+                    key="profile_link"
+                    to={"/c/profile"}
+                    className={props.classes.noDecoration}
+                >
+                    <ListItem
+                        button
+                        key="profile"
+                    >
+                        <ListItemIcon>
+                            <AccountBoxIcon />
+                        </ListItemIcon>
+
+                        <ListItemText
+                            primary="Profile"
+                        />
+                    </ListItem>
+                </Link>
+            </List>
+
+            <Divider />
+
+            <List>
+                <Link
                     key="contact_us_link"
-                    to={"/contact_us"}
+                    to={"/c/contact_us"}
                     className={props.classes.noDecoration}
                 >
                     <ListItem
@@ -109,7 +133,7 @@ function SwipeableTemporaryDrawer(props) {
                         key="contact_us"
                     >
                         <ListItemIcon>
-                            <HelpIcon />
+                            <ContactSupportIcon />
                         </ListItemIcon>
 
                         <ListItemText

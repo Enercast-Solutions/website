@@ -117,6 +117,14 @@ const styles = theme => ({
 });
 
 function NavBar(props) {
+    async function signOut() {
+        try {
+            await Auth.signOut();
+        } catch (error) {
+            console.log('error signing out: ', error);
+        }
+    }
+
     return (
         <Fragment>
             <AppBar position="sticky" className={props.classes.appBar}>
@@ -146,11 +154,14 @@ function NavBar(props) {
                             disableGutters
                             className={classNames(props.classes.iconListItem, props.classes.smBordered)}
                         >
-                            <Button
-                                variant="contained"
-                                color="secondary">
-                            Log Out
-                            </Button>
+                            <Link
+                                key={"home"}
+                                to={"/"}
+                                className={props.classes.noDecoration}
+                                onClick={signOut}
+                            >
+                                <MenuItem>Log Out</MenuItem>
+                            </Link>
                         </ListItem>
                     </Box>
                 </Toolbar>

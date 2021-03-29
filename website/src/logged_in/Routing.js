@@ -6,6 +6,7 @@ import Dashboard from "./dashboard/Dashboard";
 import Logs from "./logs/Logs";
 import CreatePrediction from "./prediction_tool/CreatePrediction";
 import Profile from "./profile/Profile";
+import ContactUs from "./contact_us/ContactUs";
 
 const styles = theme => ({
     wrapper: {
@@ -65,6 +66,10 @@ function Routing(props) {
                 <PropsRoute
                     path="/c/profile"
                     component={Profile}
+                />
+                <PropsRoute
+                    path="/c/contact_us"
+                    component={ContactUs}
                 />
             </Switch>
         </div>

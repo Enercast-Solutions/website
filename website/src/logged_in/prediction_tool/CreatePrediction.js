@@ -85,9 +85,6 @@ function CreatePrediction(props) {
                 return response.json();
             })
             .then((data) => {
-                console.log("RESPONSE");
-                console.log(data);
-
                 setPredictedConsumption(data["energy_consumption_kwh"]);
                 // TODO: Integration predictedCost once we update the model
 

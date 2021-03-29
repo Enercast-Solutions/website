@@ -33,6 +33,25 @@ export default class EnercastSolutionsAPI {
         });
     }
 
+    submitContactUs(subject, message) {
+        return fetch(`${global.config.api.baseUrl}/user/submit_contact_us`, {
+            method: 'POST',
+            mode: 'cors',
+            cache: 'no-cache',
+            credentials: 'omit',
+            headers: {
+                'Authorization': this.jwt,
+                'Content-Type': 'application/json'
+            },
+            redirect: 'follow',
+            referrerPolicy: 'no-referrer',
+            body: JSON.stringify({
+                "subject": String(subject),
+                "message": String(message)
+            })
+        });
+    }
+
     getUser() {
         return fetch(`${global.config.api.baseUrl}/user`, {
             method: 'GET',
