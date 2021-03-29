@@ -4,17 +4,16 @@ import classNames from "classnames";
 import { Auth } from 'aws-amplify';
 import { withStyles } from "@material-ui/core";
 import Routing from "./Routing";
-import NavBar from "./navigation/NavBar";
 import { withAuthenticator } from '@aws-amplify/ui-react';
 import { useState } from "react";
 
 const styles = theme => ({
   main: {
-    backgroundColor: theme.palette.common.white,
-    transition: theme.transitions.create(["width", "margin"], {
-      easing: theme.transitions.easing.sharp,
-      duration: theme.transitions.duration.leavingScreen
-    }),
+      background: 'linear-gradient(16.83deg, #0E68DE 5.48%, #DDB8C6 101.5%, #A01DE3 101.51%), rgba(236, 236, 236, 0.0001)',
+      transition: theme.transitions.create(["width", "margin"], {
+          easing: theme.transitions.easing.sharp,
+          duration: theme.transitions.duration.leavingScreen
+      }),
     [theme.breakpoints.down("xs")]: {
       marginLeft: 0
     }
@@ -27,8 +26,6 @@ class Main extends PureComponent {
         const { classes } = this.props;
         return (
             <Fragment>
-                <NavBar />
-
                 <main className={classNames(classes.main)}>
                     <Routing />
                 </main>

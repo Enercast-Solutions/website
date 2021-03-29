@@ -7,7 +7,7 @@ import Pace from "./shared/Pace";
 
 const LoggedInComponent = lazy(() => import("./logged_in/Main"));
 
-//const LoggedOutComponent = lazy(() => import("./logged_out/components/Main"));
+const LoggedOutComponent = lazy(() => import("./logged_out/Main"));
 
 function App() {
   return (
@@ -21,6 +21,9 @@ function App() {
             <Switch>
               <Route path="/c">
                 <LoggedInComponent />
+              </Route>
+              <Route path="/">
+                <LoggedOutComponent />
               </Route>
             </Switch>
           </Suspense>

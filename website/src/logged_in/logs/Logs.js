@@ -34,7 +34,7 @@ const columns = [
     headerName: 'Event',
     description: 'Event Name',
     sortable: true,
-    width: 325,
+    width: 450,
     valueGetter: (params) =>
       `${params.getValue('prediction_parameters')['event_name'] || ''}`,
   },
@@ -60,16 +60,7 @@ const columns = [
     width: 150,
     valueGetter: (params) =>
       `${params.getValue('prediction_results')['energy_consumption_kwh'].split(".")[0] || ''}`,
-  },
-  {
-    field: 'cost',
-    headerName: 'Cost',
-    description: 'Predicted Cost',
-    sortable: true,
-    width: 150,
-    valueGetter: (params) =>
-      `\$${params.getValue('prediction_results')['cost'] || ''}`,
-  },
+  }
 ];
 
 function Logs() {
