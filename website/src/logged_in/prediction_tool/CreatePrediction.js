@@ -230,17 +230,6 @@ function CreatePrediction(props) {
                                                         renderText={formattedValue => <>kWh: {formattedValue}</>}
                                                     />
                                                 </Typography>
-
-                                                <Typography className={props.classes.predictedConsumptionText}>
-                                                    <NumberFormat
-                                                        value={predictedConsumption}
-                                                        displayType={'text'}
-                                                        thousandSeparator={true}
-                                                        decimalScale={2}
-                                                        prefix={'$'}
-                                                        renderText={formattedValue => <>Cost: {formattedValue}</>}
-                                                    />
-                                                </Typography>
                                             </>
                                         )}
                                     </Grid>
