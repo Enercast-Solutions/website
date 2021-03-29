@@ -49,7 +49,7 @@ function Dashboard(props) {
         }
     }
 
-    async function loadProjectInformation(selectedProjectContext, forceReload) {
+    async function loadUserInfo() {
         const api = new EnercastSolutionsAPI(await loadUserFromCache());
         api.getUser()
             .then((response) => {
@@ -68,7 +68,7 @@ function Dashboard(props) {
     }
 
     if (loading) {
-        loadProjectInformation();
+        loadUserInfo();
         loadUserFromAmplify();
     }
 

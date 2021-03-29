@@ -74,10 +74,49 @@ function Profile(props) {
     const [submitLoading, setSubmitLoading] = useState(false);
     const [displayDialog, setDisplayDialog] = useState(false);
     const [verificationCode, setVerificationCode] = useState(null);
+    const [ccName, setCCName] = useState(null);
+    const [ccSqFootage, setCCSqFootage] = useState(null);
+    const [ccInfoSubmitted, setCCInfoSubmitted] = useState(false);
 
     const handleChange = (event, newValue) => {
         setValue(newValue);
     };
+
+    async function loadUserInfo() {
+        const api = new EnercastSolutionsAPI(await loadUserFromCache());
+        api.getUser()
+            .then((response) => {
+                return response.json();
+            })
+            .then((data) => {
+                setCCName(data["user"]["cc_info"]["name"]);
+                setCCSqFootage(data["user"]["cc_info"]["sq_footage"]);
+            })
+            .catch((e) => {
+                console.log(e);
+
+                setLoading(false);
+            });
+    }
+
+    async function submitCCInfo() {
+        setSubmitLoading(true);
+
+        const api = new EnercastSolutionsAPI(await loadUserFromCache());
+        api.submitCCInfo(ccName, ccSqFootage)
+            .then((response) => {
+                return response.json();
+            })
+            .then((data) => {
+                setSubmitLoading(false);
+                setCCInfoSubmitted(true);
+            })
+            .catch((e) => {
+                setSubmitLoading(false);
+
+                console.log(e);
+            });
+    }
 
     async function loadUserFromAmplify() {
         if (!email) {
@@ -92,14 +131,19 @@ function Profile(props) {
     async function submitUserInfo() {
         // we don't want to call cognito if the email hasn't changed...
         if (email !== originalEmail) {
+            setSubmitLoading(true);
+
             const user = await getUser();
 
-            console.log(user);
             let result = Auth.updateUserAttributes(user, {
                 'email': email,
             }).then(data => {
                 setDisplayDialog(true);
-            }).catch(err => console.log(err));
+            }).catch(err => {
+                setSubmitLoading(false);
+
+                console.log(err);
+            });
         }
     }
 
@@ -107,13 +151,17 @@ function Profile(props) {
         let result = Auth.verifyCurrentUserAttributeSubmit('email', verificationCode)
             .then(data => {
                 setDisplayDialog(false);
+                setSubmitLoading(false);
             })
             .catch(err => {
+                setSubmitLoading(false);
+
                 console.log(err);
             });
     }
 
     if (loading) {
+        loadUserInfo();
         loadUserFromAmplify();
     }
 
@@ -210,7 +258,54 @@ function Profile(props) {
                             </Card>
                     </TabPanel>
                     <TabPanel value={value} index={1}>
-                        Item Two
+                        <Card className={props.classes.card}>
+                            <CardContent>
+                                <form noValidate autoComplete="off">
+                                    <Grid container spacing={3}>
+                                        <Grid item xs={12}>
+                                            <TextField
+                                                id="name"
+                                                variant="outlined"
+                                                label="Name"
+                                                fullWidth
+                                                onChange={(event) => setCCName(event.target.value)}
+                                                value={ccName}
+                                            />
+                                        </Grid>
+
+                                        <Grid item xs={12}>
+                                            <TextField
+                                                id="sqFootage"
+                                                variant="outlined"
+                                                label="Facility Square Footage"
+                                                multiline={true}
+                                                fullWidth
+                                                onChange={(event) => setCCSqFootage(event.target.value)}
+                                                value={ccSqFootage}
+                                            />
+                                        </Grid>
+
+                                        <Grid item xs={12}>
+                                            <Box
+                                                display="flex"
+                                                justifyContent="flex-end"
+                                                alignItems="center"
+                                                width="100%"
+                                            >
+                                                <Button
+                                                    variant="contained"
+                                                    color="primary"
+                                                    onClick={submitCCInfo}
+                                                    className={props.classes.submitButton}
+                                                >
+                                                    {submitLoading && <CircularProgress color="white" />} {ccInfoSubmitted ? "Successfully Submitted" : "Submit"}
+                                                </Button>
+                                            </Box>
+                                        </Grid>
+                                    </Grid>
+                                </form>
+                            </CardContent>
+                        </Card>
                     </TabPanel>
                 </Grid>
             </Grid>

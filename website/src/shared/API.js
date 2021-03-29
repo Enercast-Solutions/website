@@ -52,6 +52,27 @@ export default class EnercastSolutionsAPI {
         });
     }
 
+    submitCCInfo(name, sqFootage) {
+        return fetch(`${global.config.api.baseUrl}/user/submit_cc_info`, {
+            method: 'POST',
+            mode: 'cors',
+            cache: 'no-cache',
+            credentials: 'omit',
+            headers: {
+                'Authorization': this.jwt,
+                'Content-Type': 'application/json'
+            },
+            redirect: 'follow',
+            referrerPolicy: 'no-referrer',
+            body: JSON.stringify({
+                "cc_info": {
+                    "name": String(name),
+                    "sq_footage": String(sqFootage)
+                }
+            })
+        });
+    }
+
     getUser() {
         return fetch(`${global.config.api.baseUrl}/user`, {
             method: 'GET',
