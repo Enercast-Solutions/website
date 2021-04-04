@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from "react-router-dom";
 import { useState } from 'react';
 import { withStyles } from '@material-ui/core';
 import Grid from '@material-ui/core/Grid';
@@ -7,9 +8,12 @@ import CardActions from '@material-ui/core/CardActions';
 import CardContent from '@material-ui/core/CardContent';
 import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
-import List from '@material-ui/core/List';
-import ListItem from '@material-ui/core/ListItem';
-import ListItemText from '@material-ui/core/ListItemText';
+import Table from '@material-ui/core/Table';
+import TableBody from '@material-ui/core/TableBody';
+import TableCell from '@material-ui/core/TableCell';
+import TableContainer from '@material-ui/core/TableContainer';
+import TableHead from '@material-ui/core/TableHead';
+import TableRow from '@material-ui/core/TableRow';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import { Auth } from 'aws-amplify';
 import EnercastSolutionsAPI from '../../shared/API';
@@ -34,7 +38,11 @@ const styles = theme => ({
     },
     position: {
         marginTop: theme.spacing(1)
-    }
+    },
+    noDecoration: {
+        textDecoration: "none !important",
+        color: theme.palette.common.black
+    },
 });
 
 function Dashboard(props) {
@@ -75,21 +83,19 @@ function Dashboard(props) {
     try {
         var renderedList = user["energy_consumption_predictions"].map((item) => {
             return (
-                <ListItem>
-                    <Grid container spacing={3}>
-                        <Grid item xs={6}>
-                            {item["prediction_parameters"]["event_name"]}
-                        </Grid>
-
-                        <Grid item xs={6}>
-                            {item["prediction_results"]["energy_consumption_kwh"].split(".")[0]}
-                        </Grid>
-                    </Grid>
-                </ListItem>
+                <TableRow key={item["prediction_parameters"]["event_name"]}>
+                    <TableCell>
+                        {item["prediction_parameters"]["event_name"]}
+                    </TableCell>
+                    <TableCell>
+                        {item["prediction_results"]["energy_consumption_kwh"].split(".")[0]}
+                    </TableCell>
+                </TableRow>
             );
         });
-    } catch {
 
+        renderedList = renderedList.slice(0, 5);
+    } catch {
     }
 
     return (
@@ -102,55 +108,84 @@ function Dashboard(props) {
                 </Grid>
 
                 <Grid item xs={6}>
-                    <Card className={props.classes.card}>
-                        <CardContent>
-                            <Typography className={props.classes.profile}>
-                                PROFILE
-                            </Typography>
+                    <Link
+                        key="profile_link"
+                        to={"/c/profile"}
+                        className={props.classes.noDecoration}
+                    >
+                        <Card className={props.classes.card}>
+                            <CardContent>
+                                <Typography className={props.classes.profile}>
+                                    PROFILE
+                                </Typography>
 
-                            {profile && (
-                                <>
-                                    <Typography className={props.classes.username}>
-                                        Username: {profile.attributes.email}
-                                    </Typography>
-                                </>
-                            )}
-                        </CardContent>
-                    </Card>
+                                {profile && (
+                                    <>
+                                        <Typography className={props.classes.username}>
+                                            Username: {profile.attributes.email}
+                                        </Typography>
+                                    </>
+                                )}
+                            </CardContent>
+                        </Card>
+                    </Link>
 
-                    <Card className={props.classes.card}>
-                        <CardContent>
-                            <Typography className={props.classes.profile}>
-                                PAST PREDICTIONS
-                            </Typography>
+                    <Link
+                        key="logs_link"
+                        to={"/c/logs"}
+                        className={props.classes.noDecoration}
+                    >
+                        <Card className={props.classes.card}>
+                            <CardContent>
+                                <Typography className={props.classes.profile}>
+                                    PAST PREDICTIONS
+                                </Typography>
 
-                            <List>
-                                {renderedList}
-                            </List>
-                        </CardContent>
-                    </Card>
+                                <TableContainer>
+                                    <Table aria-label="simple table">
+                                        <TableHead>
+                                            <TableRow>
+                                                <TableCell>Event Name</TableCell>
+                                                <TableCell>kWh</TableCell>
+                                            </TableRow>
+                                        </TableHead>
+
+                                        <TableBody>
+                                            {renderedList}
+                                        </TableBody>
+                                    </Table>
+                                </TableContainer>
+                            </CardContent>
+                        </Card>
+                    </Link>
                 </Grid>
 
                 <Grid item xs={6}>
-                    <Card className={props.classes.card}>
-                        <CardContent>
-                            <Typography className={props.classes.profile}>
-                                EVENT SPACE
-                            </Typography>
+                    <Link
+                        key="eventspace_link"
+                        to={"/c/profile"}
+                        className={props.classes.noDecoration}
+                    >
+                        <Card className={props.classes.card}>
+                            <CardContent>
+                                <Typography className={props.classes.profile}>
+                                    EVENT SPACE
+                                </Typography>
 
-                            {user && user["cc_info"] && (
-                                <>
-                                    <Typography className={props.classes.username}>
-                                        Name: {user["cc_info"]["name"]}
-                                    </Typography>
+                                {user && user["cc_info"] && (
+                                    <>
+                                        <Typography className={props.classes.username}>
+                                            Name: {user["cc_info"]["name"]}
+                                        </Typography>
 
-                                    <Typography className={props.classes.username}>
-                                        SQ Footage: {user["cc_info"]["sq_footage"]}
-                                    </Typography>
-                                </>
-                            )}
-                        </CardContent>
-                    </Card>
+                                        <Typography className={props.classes.username}>
+                                            SQ Footage: {user["cc_info"]["sq_footage"]}
+                                        </Typography>
+                                    </>
+                                )}
+                            </CardContent>
+                        </Card>
+                    </Link>
                 </Grid>
             </Grid>
         </div>

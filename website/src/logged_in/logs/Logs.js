@@ -29,38 +29,62 @@ function resolve(path, obj, separator='.') {
 }
 
 const columns = [
-  {
-    field: 'eventName',
-    headerName: 'Event',
-    description: 'Event Name',
-    sortable: true,
-    width: 450,
-    valueGetter: (params) =>
-      `${params.getValue('prediction_parameters')['event_name'] || ''}`,
-  },
-  {
-    field: 'dates',
-    headerName: 'Event Dates',
-    description: 'Event Start Date - Event End Date',
-    sortable: false,
-    width: 200,
-    valueGetter: (params) => {
-        try {
-            return `${params.getValue('prediction_parameters')['start_date']} - ${params.getValue('prediction_parameters')['end_date']}`
-        } catch (error) {
-            return '';
+    {
+        field: 'dateSubmitted',
+        hide: true,
+        headerName: 'Date Submitted',
+        description: 'Date Submitted',
+        sortable: true,
+        width: 150,
+        valueGetter: (params) =>
+            `${params.getValue('time_submitted') || ''}`,
+    },
+    {
+        field: 'eventName',
+        headerName: 'Event',
+        description: 'Event Name',
+        sortable: true,
+        width: 450,
+        valueGetter: (params) =>
+            `${params.getValue('prediction_parameters')['event_name'] || ''}`,
+    },
+    {
+        field: 'startDate',
+        headerName: 'Event Start Date',
+        description: 'Event Start Date',
+        sortable: true,
+        width: 175,
+        valueGetter: (params) => {
+            try {
+                return `${params.getValue('prediction_parameters')['start_date']}`
+            } catch (error) {
+                return '';
+            }
         }
+    },
+    {
+        field: 'endDate',
+        headerName: 'Event End Date',
+        description: 'Event End Date',
+        sortable: true,
+        width: 175,
+        valueGetter: (params) => {
+            try {
+                return `${params.getValue('prediction_parameters')['end_date']}`
+            } catch (error) {
+                return '';
+            }
+        }
+    },
+    {
+        field: 'kwhConsumption',
+        headerName: 'kWh',
+        description: 'kWh',
+        sortable: true,
+        width: 150,
+        valueGetter: (params) =>
+            `${params.getValue('prediction_results')['energy_consumption_kwh'].split(".")[0] || ''}`,
     }
-  },
-  {
-    field: 'kwhConsumption',
-    headerName: 'kWh',
-    description: 'kWh',
-    sortable: true,
-    width: 150,
-    valueGetter: (params) =>
-      `${params.getValue('prediction_results')['energy_consumption_kwh'].split(".")[0] || ''}`,
-  }
 ];
 
 function Logs() {
@@ -99,6 +123,12 @@ function Logs() {
                     columns={columns}
                     pageSize={5}
                     getRowId={(row) => row.ID}
+                    sortModel={[
+                        {
+                            field: 'dateSubmitted',
+                            sort: 'desc',
+                        },
+                    ]}
                 />
             </div>
         </div>

@@ -113,7 +113,7 @@ function Home(props) {
                             variant="h3"
                             className={props.classes.subheader}
                         >
-                            What We Help Deliver
+                            What We Deliver
                         </Typography>
                     </Grid>
                 </Grid>

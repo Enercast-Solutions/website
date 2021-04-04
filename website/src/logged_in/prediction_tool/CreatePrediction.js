@@ -126,7 +126,7 @@ function CreatePrediction(props) {
                                             <TextField
                                                 id="sq-ft"
                                                 variant="outlined"
-                                                label="Sqare Footage Utilized"
+                                                label="Square Footage Utilized"
                                                 fullWidth
                                                 onChange={(event) => setSqFt(event.target.value)}
                                             />
