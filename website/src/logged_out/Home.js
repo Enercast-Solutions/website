@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import { Link } from 'react-router-dom';
 import Image from "../assets/logo_homepage.png";
+import Footer from "./footer.js";
 import {
     Box,
     Typography,
@@ -179,6 +180,7 @@ function Home(props) {
                         </Typography>
                     </Grid>
                 </Grid>
+             <Footer/>
             </div>
         </Container>
     );
