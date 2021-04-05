@@ -183,7 +183,7 @@ function CreatePrediction(props) {
                                             <KeyboardDatePicker
                                                 margin="normal"
                                                 id="start-date"
-                                                label="Start Date"
+                                                label="Event Start Date"
                                                 format="MM/dd/yyyy"
                                                 value={startDate}
                                                 onChange={(date) => {setStartDate(date);}}
@@ -196,7 +196,7 @@ function CreatePrediction(props) {
                                             <KeyboardDatePicker
                                                 margin="normal"
                                                 id="end-date"
-                                                label="End Date"
+                                                label="Event End Date"
                                                 format="MM/dd/yyyy"
                                                 value={endDate}
                                                 onChange={(date) => {setEndDate(date);}}
