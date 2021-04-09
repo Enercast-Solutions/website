@@ -78,12 +78,42 @@ const columns = [
     },
     {
         field: 'kwhConsumption',
-        headerName: 'kWh',
-        description: 'kWh',
+        headerName: 'kWh Consumed',
+        description: 'kWh Consumed',
         sortable: true,
-        width: 150,
+        width: 175,
         valueGetter: (params) =>
             `${params.getValue('prediction_results')['energy_consumption_kwh'].split(".")[0] || ''}`,
+    },
+    {
+        field: 'dollarCostLowerBound',
+        headerName: 'Cost Lower Bound ($)',
+        description: 'Power Consumption Cost. Lower bound prediction.',
+        sortable: true,
+        width: 200,
+        valueGetter: (params) => {
+            if (!params.getValue('prediction_results')['energy_consumption_cost']) {
+                return '';
+            }
+
+            // NOTE: We manually hardcode in MAPE
+            return `${(parseInt(params.getValue('prediction_results')['energy_consumption_cost']) * (1 - 0.2881)).toFixed(2)}`
+        }
+    },
+    {
+        field: 'dollarCostUpperBound',
+        headerName: 'Cost Upper Bound ($)',
+        description: 'Power Consumption Cost. Upper bound prediction.',
+        sortable: true,
+        width: 200,
+        valueGetter: (params) => {
+            if (!params.getValue('prediction_results')['energy_consumption_cost']) {
+                return '';
+            }
+
+            // NOTE: We manually hardcode in MAPE
+            return `${(parseInt(params.getValue('prediction_results')['energy_consumption_cost']) * (1 + 0.2881)).toFixed(2)}`
+        }
     }
 ];
 

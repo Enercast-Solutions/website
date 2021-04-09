@@ -74,7 +74,8 @@ function CreatePrediction(props) {
     const [loading, setLoading] = useState(false);
 
     const [predictedConsumption, setPredictedConsumption] = useState(null);
-    const [predictedCost, setPredictedCost] = useState(null);
+    const [predictedCostLowerBound, setPredictedCostLowerBound] = useState(null);
+    const [predictedCostUpperBound, setPredictedCostUpperBound] = useState(null);
 
     async function createNewPrediction() {
         setLoading(true);
@@ -86,7 +87,9 @@ function CreatePrediction(props) {
             })
             .then((data) => {
                 setPredictedConsumption(data["energy_consumption_kwh"]);
-                // TODO: Integration predictedCost once we update the model
+                // NOTE: We manually hard code the MAPE here
+                setPredictedCostLowerBound(parseInt(data["energy_consumption_cost"]) * (1 - 0.2881));
+                setPredictedCostUpperBound(parseInt(data["energy_consumption_cost"]) * (1 + 0.2881));
 
                 setLoading(false);
             })
@@ -228,6 +231,38 @@ function CreatePrediction(props) {
                                                         thousandSeparator={true}
                                                         decimalScale={0}
                                                         renderText={formattedValue => <>kWh: {formattedValue}</>}
+                                                    />
+                                                </Typography>
+                                            </>
+                                        )}
+
+                                        {predictedCostUpperBound && (
+                                            <>
+                                                <Typography className={props.classes.inputPadTop}>
+                                                    Predicted Cost:
+                                                </Typography>
+
+                                                <Typography className={props.classes.predictedConsumptionText}>
+                                                    <NumberFormat
+                                                        value={predictedCostUpperBound}
+                                                        displayType={'text'}
+                                                        thousandSeparator={true}
+                                                        decimalScale={0}
+                                                        renderText={formattedValue => <>Upper-bound: ${formattedValue}</>}
+                                                    />
+                                                </Typography>
+                                            </>
+                                        )}
+
+                                        {predictedCostLowerBound && (
+                                            <>
+                                                <Typography className={props.classes.predictedConsumptionText}>
+                                                    <NumberFormat
+                                                        value={predictedCostLowerBound}
+                                                        displayType={'text'}
+                                                        thousandSeparator={true}
+                                                        decimalScale={0}
+                                                        renderText={formattedValue => <>Lower-bound: ${formattedValue}</>}
                                                     />
                                                 </Typography>
                                             </>
