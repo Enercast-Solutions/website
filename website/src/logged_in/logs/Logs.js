@@ -76,26 +76,13 @@ const columns = [
             }
         }
     },
+
     {
-        field: 'minF&B',
-        headerName: 'Min F&B Per Contract',
-        description: 'F&B Minimum Per Contract',
+        field: 'spaceUsed',
+        headerName: 'Square Footage Utilized',
+        description: 'Square Footage Utilized',
         sortable: true,
-        width: 200,
-        valueGetter: (params) => {
-            try {
-                return `${params.getValue('prediction_parameters')['F&B Minimum Per Contract']}`
-            } catch (error) {
-                return '';
-            }
-        }
-    },
-    {
-        field: 'area',
-        headerName: 'SQFT per Event',
-        description: 'SQFT per Event',
-        sortable: true,
-        width: 175,
+        width: 225,
         valueGetter: (params) => {
             try {
                 return `${params.getValue('prediction_parameters')['SQFT per Event']}`
@@ -105,28 +92,14 @@ const columns = [
         }
     },
     {
-        field: 'type',
-        headerName: 'Type',
-        description: 'Event Type',
+        field: 'numAttend',
+        headerName: 'Forecast Attendence',
+        description: 'Forecast Attendence',
         sortable: true,
-        width: 175,
+        width: 225,
         valueGetter: (params) => {
             try {
-                return `${params.getValue('prediction_parameters')['event_type']}`
-            } catch (error) {
-                return '';
-            }
-        }
-    },
-    {
-        field: 'type-account',
-        headerName: 'Type-account',
-        description: 'Event Type account',
-        sortable: true,
-        width: 175,
-        valueGetter: (params) => {
-            try {
-                return `${params.getValue('prediction_parameters')['type_account']}`
+                return `${params.getValue('prediction_parameters')['Forecast Attendence']}`
             } catch (error) {
                 return '';
             }
@@ -140,77 +113,7 @@ const columns = [
         width: 175,
         valueGetter: (params) => {
             try {
-                return `${params.getValue('prediction_parameters')['total_days']}`
-            } catch (error) {
-                return '';
-            }
-        }
-    },
-    {
-        field: 'isTelecom',
-        headerName: 'isTelecom',
-        description: 'isTelecom',
-        sortable: true,
-        width: 175,
-        valueGetter: (params) => {
-            try {
-                return `${params.getValue('prediction_parameters')['is_telecom']}`
-            } catch (error) {
-                return '';
-            }
-        }
-    },
-    {
-        field: 'isAudio',
-        headerName: 'isAudio',
-        description: 'isAudio',
-        sortable: true,
-        width: 175,
-        valueGetter: (params) => {
-            try {
-                return `${params.getValue('prediction_parameters')['is_audio']}`
-            } catch (error) {
-                return '';
-            }
-        }
-    },
-    {
-        field: 'eventDaynumber',
-        headerName: 'EventDayNumber',
-        description: 'EventDayNumber',
-        sortable: true,
-        width: 175,
-        valueGetter: (params) => {
-            try {
-                return `${params.getValue('prediction_parameters')['event_daynumber']}`
-            } catch (error) {
-                return '';
-            }
-        }
-    },
-    {
-        field: 'isWeekend',
-        headerName: 'isWeekend',
-        description: 'isWeekend',
-        sortable: true,
-        width: 175,
-        valueGetter: (params) => {
-            try {
-                return `${params.getValue('prediction_parameters')['is_weekend']}`
-            } catch (error) {
-                return '';
-            }
-        }
-    },
-    {
-        field: 'dayOfyear',
-        headerName: 'DayofYear',
-        description: 'DayofYear',
-        sortable: true,
-        width: 175,
-        valueGetter: (params) => {
-            try {
-                return `${params.getValue('prediction_parameters')['day_of_Year']}`
+                return `${params.getValue((('prediction_parameters')['endDate'].getTime()-'prediction_parameters')['startDate'].getTime()/(1000 * 3600 * 24))}`
             } catch (error) {
                 return '';
             }
@@ -225,20 +128,6 @@ const columns = [
         width: 150,
         valueGetter: (params) =>
             `${params.getValue('prediction_results')['energy_consumption_kwh'].split(".")[0] || ''}`,
-    },
-    {
-        field: 'totalCost',
-        headerName: 'Total Cost (USD)',
-        description: 'Total Cost (USD)',
-        sortable: true,
-        width: 175,
-        valueGetter: (params) => {
-            try {
-                return `${params.getValue('prediction_parameters')['total_cost']}`
-            } catch (error) {
-                return '';
-            }
-        }
     },
 
 ];

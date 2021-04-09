@@ -132,7 +132,7 @@ function NavBar(props) {
         <Fragment>
             <AppBar position="sticky" className={props.classes.appBar}>
                 <Toolbar className={props.classes.appBarToolbar}>
-                <h2 style={{ color: 'black' }}>Menu</h2>
+
 
                     <SwipeableTemporaryDrawer />
 
@@ -143,7 +143,7 @@ function NavBar(props) {
                         width="100%"
                     >
 
-
+                    
                         <CardMedia
                             component="img"
                             className={props.classes.cover}

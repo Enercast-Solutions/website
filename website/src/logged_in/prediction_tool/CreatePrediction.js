@@ -26,6 +26,7 @@ import {
   KeyboardTimePicker,
   KeyboardDatePicker,
 } from '@material-ui/pickers';
+import Divider from '@material-ui/core/Divider';
 
 
 const styles = theme => ({
@@ -99,6 +100,8 @@ function CreatePrediction(props) {
 
                 setLoading(false);
             });
+
+
     }
 
     return (
@@ -124,8 +127,17 @@ function CreatePrediction(props) {
                                                 fullWidth
                                                 onChange={(event) => setName(event.target.value)}
                                             />
+
+
                                         </Grid>
 
+                                        {Boolean(name != null) ||
+                                            <Grid item xs={12}>
+                                                <InputLabel id="error">
+                                                    *event name cannot be empty
+                                                </InputLabel>
+                                            </Grid>
+                                        }
                                         <Grid item xs={12} className={props.classes.inputPadTop}>
                                             <TextField
                                                 id="sq-ft"
@@ -136,6 +148,14 @@ function CreatePrediction(props) {
                                             />
                                         </Grid>
 
+                                        {Boolean(sqFt != null) ||
+                                            <Grid item xs={12}>
+                                                <InputLabel id="error">
+                                                    *square footage utilized cannot be empty
+                                                </InputLabel>
+                                            </Grid>
+                                        }
+
                                         <Grid item xs={12} className={props.classes.inputPadTop}>
                                             <TextField
                                                 id="forecasted-attendance"
@@ -145,29 +165,39 @@ function CreatePrediction(props) {
                                                 onChange={(event) => setForecastedAttendance(event.target.value)}
                                             />
                                         </Grid>
-                                        
-                                        <FormControl fullWidth >
-                                            <InputLabel id="specialized-equipment-label"
-                                            >Does this event require additional audiovisual and/or telecom equipment?
 
-                                            </InputLabel>
-                                            <Select
-                                                labelId="specialized-equipment-label"
+                                        {Boolean(forecastedAttendance != null) ||
+                                            <Grid item xs={12}>
+                                                <InputLabel id="error">
+                                                    *forecast attendence cannot be empty
+                                                </InputLabel>
+                                            </Grid>
+                                        }
+
+                                        <Grid item xs={12} className={props.classes.inputPadTop}>
+                                            <FormControl fullWidth >
+                                                <InputLabel id="specialized-equipment-label"
+                                                >Does this event require additional audiovisual and/or telecom equipment?
+
+                                                </InputLabel>
+                                                <Select
+                                                    labelId="specialized-equipment-label"
                                                 id="specialized-equipment"
                                                 value={specializedEquipment}
                                                 onChange={(event) => {setSpecializedEquipment(event.target.value);}}
-                                            >
-                                                <MenuItem value={1}>Yes</MenuItem>
-                                                <MenuItem value={0}>No</MenuItem>
-                                            </Select>
-                                        </FormControl>
+                                                >
+                                                    <MenuItem value={1}>Yes</MenuItem>
+                                                    <MenuItem value={0}>No</MenuItem>
+                                                </Select>
+                                            </FormControl>
+                                        </Grid>
                                     </Grid>
 
-                                    <Grid item xs={1} />
+                                    <Grid item xs={1}/>
 
-                                    <Grid item xs={6}>
+                                    <Grid item xs={5}>
 
-                                    <Grid item xs={12} className={props.classes.inputPadTop}>
+                                    <Grid item xs={12} >
                                         <TextField
                                             id="num-setup-days"
                                             variant="outlined"
@@ -176,6 +206,13 @@ function CreatePrediction(props) {
                                             onChange={(event) => setNumSetupDays(event.target.value)}
                                         />
                                     </Grid>
+                                    {Boolean(numSetupDays != null) ||
+                                        <Grid item xs={12}>
+                                            <InputLabel id="error">
+                                                *number of setup days cannot be empty
+                                            </InputLabel>
+                                        </Grid>
+                                    }
                                         <MuiPickersUtilsProvider utils={DateFnsUtils}>
                                             <KeyboardDatePicker
                                                 margin="normal"
@@ -212,6 +249,13 @@ function CreatePrediction(props) {
                                                 onChange={(event) => setNumTeardownDays(event.target.value)}
                                             />
                                         </Grid>
+                                        {Boolean(numTeardownDays != null) ||
+                                            <Grid item xs={12}>
+                                                <InputLabel id="error">
+                                                    *number of teardown days cannot be empty
+                                                </InputLabel>
+                                            </Grid>
+                                        }
 
                                         <Button
                                             variant="contained"
