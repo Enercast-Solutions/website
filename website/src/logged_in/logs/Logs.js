@@ -76,7 +76,62 @@ const columns = [
             }
         }
     },
-
+    {
+        field: 'daystoSetup',
+        headerName: 'Number of SetupDays',
+        description: 'Number of SetupDays',
+        sortable: true,
+        width: 150,
+        valueGetter: (params) => {
+            try {
+                return `${params.getValue('prediction_parameters')['Number of SetupDays']}`
+            } catch (error) {
+                return '';
+            }
+        }
+    },
+    {
+        field: 'daystoTeardown',
+        headerName: 'Number of TearDown Days',
+        description: 'Number of TearDown Days',
+        sortable: true,
+        width: 150,
+        valueGetter: (params) => {
+            try {
+                return `${params.getValue('prediction_parameters')['Number of TearDown Days']}`
+            } catch (error) {
+                return '';
+            }
+        }
+    },
+    {
+        field: 'isAudiovisual',
+        headerName: 'isAudioVisual',
+        description: 'isAudioVisual',
+        sortable: true,
+        width: 150,
+        valueGetter: (params) => {
+            try {
+                return `${params.getValue('prediction_parameters')['isAudioVisual']}`
+            } catch (error) {
+                return '';
+            }
+        }
+    },
+    {
+        field: 'isTelecom',
+        headerName: 'isTelecom',
+        description: 'isTelecom',
+        sortable: true,
+        width: 150,
+        valueGetter: (params) => {
+            try {
+                return `${params.getValue('prediction_parameters')['isTelecom']}`
+            } catch (error) {
+                return '';
+            }
+        }
+    },
     {
         field: 'spaceUsed',
         headerName: 'Square Footage Utilized',
