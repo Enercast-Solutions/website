@@ -27,6 +27,7 @@ import {
   KeyboardDatePicker,
 } from '@material-ui/pickers';
 
+
 const styles = theme => ({
     root: {
         backgroundColor: theme.palette.common.white
@@ -59,6 +60,9 @@ const styles = theme => ({
     },
     datePicker: {
         marginRight: theme.spacing(3)
+    },
+    divider: {
+        marginTop: theme.spacing(2)
     }
 });
 
@@ -141,33 +145,12 @@ function CreatePrediction(props) {
                                                 onChange={(event) => setForecastedAttendance(event.target.value)}
                                             />
                                         </Grid>
+                                        
+                                        <FormControl fullWidth >
+                                            <InputLabel id="specialized-equipment-label"
+                                            >Does this event require additional audiovisual and/or telecom equipment?
 
-                                        <Grid item xs={12} className={props.classes.inputPadTop}>
-                                            <TextField
-                                                id="num-setup-days"
-                                                variant="outlined"
-                                                label="Number of Setup days"
-                                                fullWidth
-                                                onChange={(event) => setNumSetupDays(event.target.value)}
-                                            />
-                                        </Grid>
-
-                                        <Grid item xs={12} className={props.classes.inputPadTop}>
-                                            <TextField
-                                                id="num-teardown-days"
-                                                variant="outlined"
-                                                label="Number of Teardown days"
-                                                fullWidth
-                                                onChange={(event) => setNumTeardownDays(event.target.value)}
-                                            />
-                                        </Grid>
-                                    </Grid>
-
-                                    <Grid item xs={1} />
-
-                                    <Grid item xs={6}>
-                                        <FormControl fullWidth>
-                                            <InputLabel id="specialized-equipment-label">Utilizing specialized Equipment?</InputLabel>
+                                            </InputLabel>
                                             <Select
                                                 labelId="specialized-equipment-label"
                                                 id="specialized-equipment"
@@ -178,7 +161,21 @@ function CreatePrediction(props) {
                                                 <MenuItem value={0}>No</MenuItem>
                                             </Select>
                                         </FormControl>
+                                    </Grid>
 
+                                    <Grid item xs={1} />
+
+                                    <Grid item xs={6}>
+
+                                    <Grid item xs={12} className={props.classes.inputPadTop}>
+                                        <TextField
+                                            id="num-setup-days"
+                                            variant="outlined"
+                                            label="Number of Setup days"
+                                            fullWidth
+                                            onChange={(event) => setNumSetupDays(event.target.value)}
+                                        />
+                                    </Grid>
                                         <MuiPickersUtilsProvider utils={DateFnsUtils}>
                                             <KeyboardDatePicker
                                                 margin="normal"
@@ -205,6 +202,16 @@ function CreatePrediction(props) {
                                                 }}
                                             />
                                         </MuiPickersUtilsProvider>
+
+                                        <Grid item xs={12} className={props.classes.inputPadTop}>
+                                            <TextField
+                                                id="num-teardown-days"
+                                                variant="outlined"
+                                                label="Number of Teardown days"
+                                                fullWidth
+                                                onChange={(event) => setNumTeardownDays(event.target.value)}
+                                            />
+                                        </Grid>
 
                                         <Button
                                             variant="contained"
