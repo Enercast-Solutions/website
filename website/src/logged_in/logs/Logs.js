@@ -89,13 +89,13 @@ const columns = [
     },
     {
         field: 'daystoSetup',
-        headerName: 'Number of SetupDays',
-        description: 'Number of SetupDays',
+        headerName: 'Number of Setup Days',
+        description: 'Number of Setup Days',
         sortable: true,
-        width: 200,
+        width: 250,
         valueGetter: (params) => {
             try {
-                return `${params.getValue('prediction_parameters')['setup_days']}`
+                return  `${Math.floor(( Date.parse(`${params.getValue('prediction_parameters')['start_date']}`) - Date.parse(`${params.getValue('prediction_parameters')['setup_days']}`) ) / 86400000)}`
             } catch (error) {
                 return '';
             }
@@ -103,27 +103,13 @@ const columns = [
     },
     {
         field: 'daystoTeardown',
-        headerName: 'Number of TearDown Days',
-        description: 'Number of TearDown Days',
+        headerName: 'Number of Teardown Days',
+        description: 'Number of Teardown Days',
         sortable: true,
-        width: 200,
+        width: 275,
         valueGetter: (params) => {
             try {
-                return `${params.getValue('prediction_parameters')['teardown_days']}`
-            } catch (error) {
-                return '';
-            }
-        }
-    },
-    {
-        field: 'isAudiovisual',
-        headerName: 'isAudioVisual',
-        description: 'isAudioVisual',
-        sortable: true,
-        width: 150,
-        valueGetter: (params) => {
-            try {
-                return `${params.getValue('prediction_parameters')['is_audio']}`
+                return `${Math.floor(( Date.parse(`${params.getValue('prediction_parameters')['teardown_days']}`) - Date.parse(`${params.getValue('prediction_parameters')['end_date']}`) ) / 86400000)}`
             } catch (error) {
                 return '';
             }
@@ -131,13 +117,17 @@ const columns = [
     },
     {
         field: 'isTelecom',
-        headerName: 'isTelecom',
-        description: 'isTelecom',
+        headerName: 'Specialized Equipment',
+        description: 'Specialized Equipment',
         sortable: true,
-        width: 150,
+        width: 225,
         valueGetter: (params) => {
             try {
-                return `${params.getValue('prediction_parameters')['is_audio']}`
+                if( params.getValue('prediction_parameters')['is_audio'] == 1) {
+                    return "Yes"
+                } else {
+                    return "No"
+                }
             } catch (error) {
                 return '';
             }
@@ -173,14 +163,14 @@ const columns = [
     },
     {
         field: 'totalDays',
-        headerName: 'Total Days (In-Out)',
-        description: 'Total Days (In-Out)',
+        headerName: 'Event Duration (Days)',
+        description: 'Event Duration (Days)',
         sortable: true,
-        width: 175,
+        width: 225,
         valueGetter: (params) => {
             try {
                 return `${Math.floor(( Date.parse(`${params.getValue('prediction_parameters')['end_date']}`) - Date.parse(`${params.getValue('prediction_parameters')['start_date']}`) ) / 86400000)}`
-                
+
             } catch (error) {
                 return '';
             }

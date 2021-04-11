@@ -74,8 +74,8 @@ function CreatePrediction(props) {
     const [specializedEquipment, setSpecializedEquipment] = useState(0);
     const [startDate, setStartDate] = useState(new Date());
     const [endDate, setEndDate] = useState(new Date());
-    const [numSetupDays, setNumSetupDays] = useState(null);
-    const [numTeardownDays, setNumTeardownDays] = useState(null);
+    const [numSetupDays, setNumSetupDays] = useState(new Date());
+    const [numTeardownDays, setNumTeardownDays] = useState(new Date());
     const [loading, setLoading] = useState(false);
 
     const [predictedConsumption, setPredictedConsumption] = useState(null);
@@ -86,7 +86,7 @@ function CreatePrediction(props) {
         setLoading(true);
 
         const api = new EnercastSolutionsAPI(await loadUserFromCache());
-        api.createPrediction(name, forecastedAttendance, sqFt, specializedEquipment, format(startDate, "yyyy-MM-dd"), format(endDate, "yyyy-MM-dd"), numSetupDays, numTeardownDays)
+        api.createPrediction(name, forecastedAttendance, sqFt, specializedEquipment, format(startDate, "yyyy-MM-dd"), format(endDate, "yyyy-MM-dd"), format(numSetupDays, "yyyy-MM-dd"),format(numTeardownDays, "yyyy-MM-dd"))
             .then((response) => {
                 return response.json();
             })
@@ -134,13 +134,7 @@ function CreatePrediction(props) {
 
                                         </Grid>
 
-                                        {Boolean(name != null) ||
-                                            <Grid item xs={12}>
-                                                <InputLabel id="error">
-                                                    *event name cannot be empty
-                                                </InputLabel>
-                                            </Grid>
-                                        }
+
                                         <Grid item xs={12} className={props.classes.inputPadTop}>
                                             <TextField
                                                 id="sq-ft"
@@ -151,13 +145,7 @@ function CreatePrediction(props) {
                                             />
                                         </Grid>
 
-                                        {Boolean(sqFt != null) ||
-                                            <Grid item xs={12}>
-                                                <InputLabel id="error">
-                                                    *square footage utilized cannot be empty
-                                                </InputLabel>
-                                            </Grid>
-                                        }
+
 
                                         <Grid item xs={12} className={props.classes.inputPadTop}>
                                             <TextField
@@ -169,13 +157,7 @@ function CreatePrediction(props) {
                                             />
                                         </Grid>
 
-                                        {Boolean(forecastedAttendance != null) ||
-                                            <Grid item xs={12}>
-                                                <InputLabel id="error">
-                                                    *forecast attendence cannot be empty
-                                                </InputLabel>
-                                            </Grid>
-                                        }
+
 
                                         <Grid item xs={12} className={props.classes.inputPadTop}>
                                             <FormControl fullWidth >
@@ -200,23 +182,22 @@ function CreatePrediction(props) {
 
                                     <Grid item xs={5}>
 
-                                    <Grid item xs={12} >
-                                        <TextField
-                                            id="num-setup-days"
-                                            variant="outlined"
-                                            label="Number of Setup days"
-                                            fullWidth
-                                            onChange={(event) => setNumSetupDays(event.target.value)}
-                                        />
-                                    </Grid>
-                                    {Boolean(numSetupDays != null) ||
-                                        <Grid item xs={12}>
-                                            <InputLabel id="error">
-                                                *number of setup days cannot be empty
-                                            </InputLabel>
-                                        </Grid>
-                                    }
+
+
                                         <MuiPickersUtilsProvider utils={DateFnsUtils}>
+                                            <KeyboardDatePicker
+                                                margin="normal"
+                                                id="num-setup-days"
+                                                label="Setup Start Date"
+                                                format="MM/dd/yyyy"
+                                                value={numSetupDays}
+                                                onChange={(date) => {setNumSetupDays(date);}}
+                                                KeyboardButtonProps={{
+                                                    'aria-label': 'change date',
+                                                }}
+                                                className={props.classes.datePicker}
+                                            />
+
                                             <KeyboardDatePicker
                                                 margin="normal"
                                                 id="start-date"
@@ -241,24 +222,19 @@ function CreatePrediction(props) {
                                                     'aria-label': 'change date',
                                                 }}
                                             />
+                                            <KeyboardDatePicker
+                                                margin="normal"
+                                                id="num-teardown-days"
+                                                label="Teardown End Date"
+                                                format="MM/dd/yyyy"
+                                                value={numTeardownDays}
+                                                onChange={(date) => {setNumTeardownDays(date);}}
+                                                KeyboardButtonProps={{
+                                                    'aria-label': 'change date',
+                                                }}
+                                            />
                                         </MuiPickersUtilsProvider>
 
-                                        <Grid item xs={12} className={props.classes.inputPadTop}>
-                                            <TextField
-                                                id="num-teardown-days"
-                                                variant="outlined"
-                                                label="Number of Teardown days"
-                                                fullWidth
-                                                onChange={(event) => setNumTeardownDays(event.target.value)}
-                                            />
-                                        </Grid>
-                                        {Boolean(numTeardownDays != null) ||
-                                            <Grid item xs={12}>
-                                                <InputLabel id="error">
-                                                    *number of teardown days cannot be empty
-                                                </InputLabel>
-                                            </Grid>
-                                        }
 
                                         <Button
                                             variant="contained"
