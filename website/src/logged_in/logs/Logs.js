@@ -28,6 +28,17 @@ function resolve(path, obj, separator='.') {
     return properties.reduce((prev, curr) => prev && prev[curr], obj)
 }
 
+function datediff(first, second) {
+    // Take the difference between the dates and divide by milliseconds per day.
+    // Round to nearest whole number to deal with DST.
+    return Math.round((second-first)/(1000*60*60*24));
+}
+
+function parseDate(str) {
+    var mdy = str.split('/');
+    return new Date(mdy[2], mdy[0]-1, mdy[1]);
+}
+
 const columns = [
     {
         field: 'dateSubmitted',
@@ -81,10 +92,10 @@ const columns = [
         headerName: 'Number of SetupDays',
         description: 'Number of SetupDays',
         sortable: true,
-        width: 150,
+        width: 200,
         valueGetter: (params) => {
             try {
-                return `${params.getValue('prediction_parameters')['Number of SetupDays']}`
+                return `${params.getValue('prediction_parameters')['setup_days']}`
             } catch (error) {
                 return '';
             }
@@ -95,10 +106,10 @@ const columns = [
         headerName: 'Number of TearDown Days',
         description: 'Number of TearDown Days',
         sortable: true,
-        width: 150,
+        width: 200,
         valueGetter: (params) => {
             try {
-                return `${params.getValue('prediction_parameters')['Number of TearDown Days']}`
+                return `${params.getValue('prediction_parameters')['teardown_days']}`
             } catch (error) {
                 return '';
             }
@@ -112,7 +123,7 @@ const columns = [
         width: 150,
         valueGetter: (params) => {
             try {
-                return `${params.getValue('prediction_parameters')['isAudioVisual']}`
+                return `${params.getValue('prediction_parameters')['is_audio']}`
             } catch (error) {
                 return '';
             }
@@ -126,7 +137,7 @@ const columns = [
         width: 150,
         valueGetter: (params) => {
             try {
-                return `${params.getValue('prediction_parameters')['isTelecom']}`
+                return `${params.getValue('prediction_parameters')['is_audio']}`
             } catch (error) {
                 return '';
             }
@@ -140,7 +151,7 @@ const columns = [
         width: 225,
         valueGetter: (params) => {
             try {
-                return `${params.getValue('prediction_parameters')['SQFT per Event']}`
+                return `${params.getValue('prediction_parameters')['sqft']}`
             } catch (error) {
                 return '';
             }
@@ -154,7 +165,7 @@ const columns = [
         width: 225,
         valueGetter: (params) => {
             try {
-                return `${params.getValue('prediction_parameters')['Forecast Attendence']}`
+                return `${params.getValue('prediction_parameters')['forecast_attendance']}`
             } catch (error) {
                 return '';
             }
@@ -168,7 +179,8 @@ const columns = [
         width: 175,
         valueGetter: (params) => {
             try {
-                return `${params.getValue((('prediction_parameters')['endDate'].getTime()-'prediction_parameters')['startDate'].getTime()/(1000 * 3600 * 24))}`
+                return `${Math.floor(( Date.parse(`${params.getValue('prediction_parameters')['end_date']}`) - Date.parse(`${params.getValue('prediction_parameters')['start_date']}`) ) / 86400000)}`
+                
             } catch (error) {
                 return '';
             }
