@@ -26,6 +26,8 @@ import {
   KeyboardTimePicker,
   KeyboardDatePicker,
 } from '@material-ui/pickers';
+import Divider from '@material-ui/core/Divider';
+
 
 const styles = theme => ({
     root: {
@@ -59,6 +61,9 @@ const styles = theme => ({
     },
     datePicker: {
         marginRight: theme.spacing(3)
+    },
+    divider: {
+        marginTop: theme.spacing(2)
     }
 });
 
@@ -69,8 +74,8 @@ function CreatePrediction(props) {
     const [specializedEquipment, setSpecializedEquipment] = useState(0);
     const [startDate, setStartDate] = useState(new Date());
     const [endDate, setEndDate] = useState(new Date());
-    const [numSetupDays, setNumSetupDays] = useState(null);
-    const [numTeardownDays, setNumTeardownDays] = useState(null);
+    const [setupStartDate, setsetupStartDate] = useState(new Date());
+    const [teardownEndDate, setteardownEndDate] = useState(new Date());
     const [loading, setLoading] = useState(false);
 
     const [predictedConsumption, setPredictedConsumption] = useState(null);
@@ -79,6 +84,9 @@ function CreatePrediction(props) {
 
     async function createNewPrediction() {
         setLoading(true);
+
+        const numSetupDays = Math.floor(( Date.parse(`${startDate}`) - Date.parse(`${setupStartDate}`) ) / 86400000);
+        const numTeardownDays = Math.floor(( Date.parse(`${teardownEndDate}`) - Date.parse(`${endDate}`) ) / 86400000) + 1;
 
         const api = new EnercastSolutionsAPI(await loadUserFromCache());
         api.createPrediction(name, forecastedAttendance, sqFt, specializedEquipment, format(startDate, "yyyy-MM-dd"), format(endDate, "yyyy-MM-dd"), numSetupDays, numTeardownDays)
@@ -98,6 +106,8 @@ function CreatePrediction(props) {
 
                 setLoading(false);
             });
+
+
     }
 
     return (
@@ -115,99 +125,127 @@ function CreatePrediction(props) {
                             <form noValidate autoComplete="off">
                                 <Grid container spacing={3}>
                                     <Grid item xs={5}>
-                                        <Grid item xs={12}>
+                                        <Grid item xs={12} className={props.classes.inputPadTop}>
                                             <TextField
                                                 id="event-name"
                                                 variant="outlined"
                                                 label="Event Name"
+
                                                 fullWidth
                                                 onChange={(event) => setName(event.target.value)}
+                                                error={name === ""}
+                                                helperText={name === "" ? 'Empty field!' : ' '}
                                             />
                                         </Grid>
 
-                                        <Grid item xs={12} className={props.classes.inputPadTop}>
+                                        <Grid item xs={12}>
                                             <TextField
                                                 id="sq-ft"
                                                 variant="outlined"
                                                 label="Square Footage Utilized"
                                                 fullWidth
                                                 onChange={(event) => setSqFt(event.target.value)}
+                                                error={sqFt === ""}
+                                                helperText={sqFt === "" ? 'Empty field!' : ' '}
                                             />
                                         </Grid>
 
-                                        <Grid item xs={12} className={props.classes.inputPadTop}>
+                                        <Grid item xs={12}>
                                             <TextField
                                                 id="forecasted-attendance"
                                                 variant="outlined"
                                                 label="Forecasted Attendance"
                                                 fullWidth
                                                 onChange={(event) => setForecastedAttendance(event.target.value)}
+                                                error={forecastedAttendance === ""}
+                                                helperText={forecastedAttendance === "" ? 'Empty field!' : ' '}
                                             />
                                         </Grid>
 
-                                        <Grid item xs={12} className={props.classes.inputPadTop}>
-                                            <TextField
-                                                id="num-setup-days"
-                                                variant="outlined"
-                                                label="Number of Setup days"
-                                                fullWidth
-                                                onChange={(event) => setNumSetupDays(event.target.value)}
-                                            />
-                                        </Grid>
+                                        <Grid item xs={12}>
+                                            <FormControl fullWidth >
+                                                <InputLabel id="specialized-equipment-label"
+                                                >Does this event require additional audiovisual and/or telecom equipment?
 
-                                        <Grid item xs={12} className={props.classes.inputPadTop}>
-                                            <TextField
-                                                id="num-teardown-days"
-                                                variant="outlined"
-                                                label="Number of Teardown days"
-                                                fullWidth
-                                                onChange={(event) => setNumTeardownDays(event.target.value)}
-                                            />
-                                        </Grid>
-                                    </Grid>
-
-                                    <Grid item xs={1} />
-
-                                    <Grid item xs={6}>
-                                        <FormControl fullWidth>
-                                            <InputLabel id="specialized-equipment-label">Utilizing specialized Equipment?</InputLabel>
-                                            <Select
-                                                labelId="specialized-equipment-label"
+                                                </InputLabel>
+                                                <Select
+                                                    labelId="specialized-equipment-label"
                                                 id="specialized-equipment"
                                                 value={specializedEquipment}
                                                 onChange={(event) => {setSpecializedEquipment(event.target.value);}}
-                                            >
-                                                <MenuItem value={1}>Yes</MenuItem>
-                                                <MenuItem value={0}>No</MenuItem>
-                                            </Select>
-                                        </FormControl>
+                                                >
+                                                    <MenuItem value={1}>Yes</MenuItem>
+                                                    <MenuItem value={0}>No</MenuItem>
+                                                </Select>
+                                            </FormControl>
+                                        </Grid>
+                                    </Grid>
 
-                                        <MuiPickersUtilsProvider utils={DateFnsUtils}>
-                                            <KeyboardDatePicker
-                                                margin="normal"
-                                                id="start-date"
-                                                label="Event Start Date"
-                                                format="MM/dd/yyyy"
-                                                value={startDate}
-                                                onChange={(date) => {setStartDate(date);}}
-                                                KeyboardButtonProps={{
-                                                    'aria-label': 'change date',
-                                                }}
-                                                className={props.classes.datePicker}
-                                            />
+                                    <Grid item xs={1}/>
 
-                                            <KeyboardDatePicker
-                                                margin="normal"
-                                                id="end-date"
-                                                label="Event End Date"
-                                                format="MM/dd/yyyy"
-                                                value={endDate}
-                                                onChange={(date) => {setEndDate(date);}}
-                                                KeyboardButtonProps={{
-                                                    'aria-label': 'change date',
-                                                }}
-                                            />
-                                        </MuiPickersUtilsProvider>
+                                    <Grid item xs={6}>
+                                        <Grid item xs={12}>
+                                            <MuiPickersUtilsProvider utils={DateFnsUtils}>
+                                                <KeyboardDatePicker
+                                                    margin="normal"
+                                                    id="setup-start-date"
+                                                    label="Setup Start Date"
+                                                    format="MM/dd/yyyy"
+                                                    value={setupStartDate}
+                                                    onChange={(date) => {setsetupStartDate(date);}}
+                                                    KeyboardButtonProps={{
+                                                        'aria-label': 'change date',
+                                                    }}
+                                                    className={props.classes.datePicker}
+                                                />
+                                            </MuiPickersUtilsProvider>
+                                        </Grid>
+
+                                        <Grid item xs={12}>
+                                            <MuiPickersUtilsProvider utils={DateFnsUtils}>
+                                                <KeyboardDatePicker
+                                                    margin="normal"
+                                                    id="start-date"
+                                                    label="Event Start Date"
+                                                    format="MM/dd/yyyy"
+                                                    value={startDate}
+                                                    onChange={(date) => {setStartDate(date);}}
+                                                    KeyboardButtonProps={{
+                                                        'aria-label': 'change date',
+                                                    }}
+                                                    className={props.classes.datePicker}
+                                                />
+
+                                                <KeyboardDatePicker
+                                                    margin="normal"
+                                                    id="end-date"
+                                                    label="Event End Date"
+                                                    format="MM/dd/yyyy"
+                                                    value={endDate}
+                                                    onChange={(date) => {setEndDate(date);}}
+                                                    KeyboardButtonProps={{
+                                                        'aria-label': 'change date',
+                                                    }}
+                                                />
+                                            </MuiPickersUtilsProvider>
+                                        </Grid>
+
+                                        <Grid item xs={12}>
+                                            <MuiPickersUtilsProvider utils={DateFnsUtils}>
+                                                <KeyboardDatePicker
+                                                    margin="normal"
+                                                    id="teardown-end-date"
+                                                    label="Teardown End Date"
+                                                    format="MM/dd/yyyy"
+                                                    value={teardownEndDate}
+                                                    onChange={(date) => {setteardownEndDate(date);}}
+                                                    KeyboardButtonProps={{
+                                                        'aria-label': 'change date',
+                                                    }}
+
+                                                />
+                                            </MuiPickersUtilsProvider>
+                                        </Grid>
 
                                         <Button
                                             variant="contained"

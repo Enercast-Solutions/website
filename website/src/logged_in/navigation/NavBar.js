@@ -113,6 +113,9 @@ const styles = theme => ({
     primaryColorDecoration: {
         textDecoration: "none !important",
         color: theme.palette.primary
+    },
+    menuItem: {
+        color: theme.palette.common.white,
     }
 });
 
@@ -129,6 +132,8 @@ function NavBar(props) {
         <Fragment>
             <AppBar position="sticky" className={props.classes.appBar}>
                 <Toolbar className={props.classes.appBarToolbar}>
+
+
                     <SwipeableTemporaryDrawer />
 
                     <Box
@@ -137,6 +142,8 @@ function NavBar(props) {
                         alignItems="center"
                         width="100%"
                     >
+
+                    
                         <CardMedia
                             component="img"
                             className={props.classes.cover}

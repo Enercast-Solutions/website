@@ -28,6 +28,17 @@ function resolve(path, obj, separator='.') {
     return properties.reduce((prev, curr) => prev && prev[curr], obj)
 }
 
+function datediff(first, second) {
+    // Take the difference between the dates and divide by milliseconds per day.
+    // Round to nearest whole number to deal with DST.
+    return Math.round((second-first)/(1000*60*60*24));
+}
+
+function parseDate(str) {
+    var mdy = str.split('/');
+    return new Date(mdy[2], mdy[0]-1, mdy[1]);
+}
+
 const columns = [
     {
         field: 'dateSubmitted',
@@ -37,7 +48,7 @@ const columns = [
         sortable: true,
         width: 150,
         valueGetter: (params) =>
-            `${params.getValue('time_submitted') || ''}`,
+            parseInt(params.getValue('time_submitted') || 0),
     },
     {
         field: 'eventName',
@@ -77,13 +88,103 @@ const columns = [
         }
     },
     {
+        field: 'daystoSetup',
+        headerName: 'Number of Setup Days',
+        description: 'Number of Setup Days',
+        sortable: true,
+        width: 250,
+        valueGetter: (params) => {
+            try {
+                return  parseInt(params.getValue('prediction_parameters')['setup_days']);
+            } catch (error) {
+                return '';
+            }
+        }
+    },
+    {
+        field: 'daystoTeardown',
+        headerName: 'Number of Teardown Days',
+        description: 'Number of Teardown Days',
+        sortable: true,
+        width: 275,
+        valueGetter: (params) => {
+            try {
+                return parseInt(params.getValue('prediction_parameters')['teardown_days']);
+            } catch (error) {
+                return '';
+            }
+        }
+    },
+    {
+        field: 'isTelecom',
+        headerName: 'Specialized Equipment',
+        description: 'Specialized Equipment',
+        sortable: true,
+        width: 225,
+        valueGetter: (params) => {
+            try {
+                if( params.getValue('prediction_parameters')['is_audio'] == 1) {
+                    return "Yes"
+                } else {
+                    return "No"
+                }
+            } catch (error) {
+                return '';
+            }
+        }
+    },
+    {
+        field: 'spaceUsed',
+        headerName: 'Square Footage Utilized',
+        description: 'Square Footage Utilized',
+        sortable: true,
+        width: 225,
+        valueGetter: (params) => {
+            try {
+                return parseInt(params.getValue('prediction_parameters')['sqft']);
+            } catch (error) {
+                return '';
+            }
+        }
+    },
+    {
+        field: 'numAttend',
+        headerName: 'Forecast Attendence',
+        description: 'Forecast Attendence',
+        sortable: true,
+        width: 225,
+        valueGetter: (params) => {
+            try {
+                return parseInt(params.getValue('prediction_parameters')['forecast_attendance']);
+            } catch (error) {
+                return '';
+            }
+        }
+    },
+    {
+        field: 'totalDays',
+        headerName: 'Event Duration (Days)',
+        description: 'Event Duration (Days)',
+        sortable: true,
+        width: 225,
+        valueGetter: (params) => {
+            try {
+                return Math.floor(( Date.parse(`${params.getValue('prediction_parameters')['end_date']}`) - Date.parse(`${params.getValue('prediction_parameters')['start_date']}`) ) / 86400000) + 1;
+
+            } catch (error) {
+                return '';
+            }
+        }
+    },
+
+    {
         field: 'kwhConsumption',
         headerName: 'kWh Consumed',
         description: 'kWh Consumed',
         sortable: true,
         width: 175,
         valueGetter: (params) =>
-            `${params.getValue('prediction_results')['energy_consumption_kwh'].split(".")[0] || ''}`,
+            parseInt(params.getValue('prediction_results')['energy_consumption_kwh'].split(".")[0] || '')
     },
     {
         field: 'dollarCostLowerBound',
@@ -97,7 +198,7 @@ const columns = [
             }
 
             // NOTE: We manually hardcode in MAPE
-            return `${(parseInt(params.getValue('prediction_results')['energy_consumption_cost']) * (1 - 0.2881)).toFixed(2)}`
+            return (parseInt(params.getValue('prediction_results')['energy_consumption_cost']) * (1 - 0.2881)).toFixed(2);
         }
     },
     {
@@ -112,7 +213,7 @@ const columns = [
             }
 
             // NOTE: We manually hardcode in MAPE
-            return `${(parseInt(params.getValue('prediction_results')['energy_consumption_cost']) * (1 + 0.2881)).toFixed(2)}`
+            return (parseInt(params.getValue('prediction_results')['energy_consumption_cost']) * (1 + 0.2881)).toFixed(2)
         }
     }
 ];

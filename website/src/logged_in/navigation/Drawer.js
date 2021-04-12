@@ -153,6 +153,7 @@ function SwipeableTemporaryDrawer(props) {
                     onClick={() => {setOpen(!open)}}
                     color="secondary"
                 >
+                    <h7 style={{ color: 'black' }}>Menu</h7>
                     <ArrowForwardIosIcon />
                 </IconButton>
 
