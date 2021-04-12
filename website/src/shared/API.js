@@ -6,7 +6,7 @@ export default class EnercastSolutionsAPI {
         this.jwt = user.signInUserSession.accessToken.jwtToken;
     }
 
-    createPrediction(name, forecastedAttendance, sqFt, specializedEquipment, startDate, endDate, numSetUpDays, numTeardownDays) {
+    createPrediction(name, forecastedAttendance, sqFt, specializedEquipment, startDate, endDate, numSetUpDays, numTeardownDays,setupStartdate,teardownEnddate) {
         return fetch(`${global.config.api.baseUrl}/user/submit_prediction`, {
             method: 'POST',
             mode: 'cors',
@@ -26,6 +26,8 @@ export default class EnercastSolutionsAPI {
                     "setup_days": String(numSetUpDays),
                     "teardown_days": String(numTeardownDays),
                     "sqft": String(sqFt),
+                    "teardown_End_date":String(teardownEnddate),
+                    "setup_Start_date":String(setupStartdate),
                     "forecast_attendance": String(forecastedAttendance),
                     "is_audio": String(specializedEquipment)
                 }

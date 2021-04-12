@@ -95,7 +95,7 @@ const columns = [
         width: 250,
         valueGetter: (params) => {
             try {
-                return  `${Math.floor(( Date.parse(`${params.getValue('prediction_parameters')['start_date']}`) - Date.parse(`${params.getValue('prediction_parameters')['setup_days']}`) ) / 86400000)}`
+                return  `${params.getValue('prediction_parameters')['setup_days']}`
             } catch (error) {
                 return '';
             }
@@ -109,7 +109,7 @@ const columns = [
         width: 275,
         valueGetter: (params) => {
             try {
-                return `${Math.floor(( Date.parse(`${params.getValue('prediction_parameters')['teardown_days']}`) - Date.parse(`${params.getValue('prediction_parameters')['end_date']}`) ) / 86400000)}`
+                return `${params.getValue('prediction_parameters')['teardown_days']}`
             } catch (error) {
                 return '';
             }

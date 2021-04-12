@@ -74,8 +74,10 @@ function CreatePrediction(props) {
     const [specializedEquipment, setSpecializedEquipment] = useState(0);
     const [startDate, setStartDate] = useState(new Date());
     const [endDate, setEndDate] = useState(new Date());
-    const [numSetupDays, setNumSetupDays] = useState(new Date());
-    const [numTeardownDays, setNumTeardownDays] = useState(new Date());
+    const [setupStartdate, setsetupStartdate] = useState(new Date());
+    const [teardownEnddate, setteardownEnddate] = useState(new Date());
+    const [numSetupDays, setNumSetupDays] = useState(null);
+    const [numTeardownDays, setNumTeardownDays] = useState(null);
     const [loading, setLoading] = useState(false);
 
     const [predictedConsumption, setPredictedConsumption] = useState(null);
@@ -86,7 +88,7 @@ function CreatePrediction(props) {
         setLoading(true);
 
         const api = new EnercastSolutionsAPI(await loadUserFromCache());
-        api.createPrediction(name, forecastedAttendance, sqFt, specializedEquipment, format(startDate, "yyyy-MM-dd"), format(endDate, "yyyy-MM-dd"), format(numSetupDays, "yyyy-MM-dd"),format(numTeardownDays, "yyyy-MM-dd"))
+        api.createPrediction(name, forecastedAttendance, sqFt, specializedEquipment, format(startDate, "yyyy-MM-dd"), format(endDate, "yyyy-MM-dd"), numSetupDays, numTeardownDays)
             .then((response) => {
                 return response.json();
             })
@@ -95,6 +97,10 @@ function CreatePrediction(props) {
                 // NOTE: We manually hard code the MAPE here
                 setPredictedCostLowerBound(parseInt(data["energy_consumption_cost"]) * (1 - 0.2881));
                 setPredictedCostUpperBound(parseInt(data["energy_consumption_cost"]) * (1 + 0.2881));
+
+                setNumSetupDays(Math.floor(( Date.parse(`${startDate}`) - Date.parse(`${setupStartdate}`) ) / 86400000));
+
+                setNumTeardownDays(Math.floor(( Date.parse(`${teardownEnddate}`) - Date.parse(`${endDate}`) ) / 86400000));
 
                 setLoading(false);
             })
@@ -122,13 +128,16 @@ function CreatePrediction(props) {
                             <form noValidate autoComplete="off">
                                 <Grid container spacing={3}>
                                     <Grid item xs={5}>
-                                        <Grid item xs={12}>
+                                        <Grid item xs={12} className={props.classes.inputPadTop}>
                                             <TextField
                                                 id="event-name"
                                                 variant="outlined"
                                                 label="Event Name"
+
                                                 fullWidth
                                                 onChange={(event) => setName(event.target.value)}
+                                                error={name === ""}
+                                                helperText={name === "" ? 'Empty field!' : ' '}
                                             />
 
 
@@ -142,6 +151,8 @@ function CreatePrediction(props) {
                                                 label="Square Footage Utilized"
                                                 fullWidth
                                                 onChange={(event) => setSqFt(event.target.value)}
+                                                error={sqFt === ""}
+                                                helperText={sqFt === "" ? 'Empty field!' : ' '}
                                             />
                                         </Grid>
 
@@ -154,6 +165,8 @@ function CreatePrediction(props) {
                                                 label="Forecasted Attendance"
                                                 fullWidth
                                                 onChange={(event) => setForecastedAttendance(event.target.value)}
+                                                error={forecastedAttendance === ""}
+                                                helperText={forecastedAttendance === "" ? 'Empty field!' : ' '}
                                             />
                                         </Grid>
 
@@ -183,21 +196,19 @@ function CreatePrediction(props) {
                                     <Grid item xs={5}>
 
 
-
                                         <MuiPickersUtilsProvider utils={DateFnsUtils}>
                                             <KeyboardDatePicker
                                                 margin="normal"
-                                                id="num-setup-days"
+                                                id="setup-start-date"
                                                 label="Setup Start Date"
                                                 format="MM/dd/yyyy"
-                                                value={numSetupDays}
-                                                onChange={(date) => {setNumSetupDays(date);}}
+                                                value={setupStartdate}
+                                                onChange={(date) => {setsetupStartdate(date);}}
                                                 KeyboardButtonProps={{
                                                     'aria-label': 'change date',
                                                 }}
                                                 className={props.classes.datePicker}
                                             />
-
                                             <KeyboardDatePicker
                                                 margin="normal"
                                                 id="start-date"
@@ -208,7 +219,7 @@ function CreatePrediction(props) {
                                                 KeyboardButtonProps={{
                                                     'aria-label': 'change date',
                                                 }}
-                                                className={props.classes.datePicker}
+
                                             />
 
                                             <KeyboardDatePicker
@@ -224,17 +235,26 @@ function CreatePrediction(props) {
                                             />
                                             <KeyboardDatePicker
                                                 margin="normal"
-                                                id="num-teardown-days"
+                                                id="teardown-end-date"
                                                 label="Teardown End Date"
                                                 format="MM/dd/yyyy"
-                                                value={numTeardownDays}
-                                                onChange={(date) => {setNumTeardownDays(date);}}
+                                                value={teardownEnddate}
+                                                onChange={(date) => {setteardownEnddate(date);}}
                                                 KeyboardButtonProps={{
                                                     'aria-label': 'change date',
                                                 }}
+
                                             />
                                         </MuiPickersUtilsProvider>
 
+
+
+                                        <TextField
+                                        id="error message"
+                                        value = {"Error Message"}
+                                        error={Math.floor(( Date.parse(`${endDate}`) - Date.parse(`${startDate}`) ) / 86400000) < 0 && Math.floor(( Date.parse(`${endDate}`) - Date.parse(`${setupStartdate}`) ) / 86400000) < 0 && Math.floor(( Date.parse(`${teardownEnddate}`) - Date.parse(`${setupStartdate}`) ) / 86400000) < 0 }
+                                        helperText={Math.floor(( Date.parse(`${endDate}`) - Date.parse(`${startDate}`) ) / 86400000) < 0 ? 'Event End Date has to be later than Event Start Date' : ' ' && Math.floor(( Date.parse(`${endDate}`) - Date.parse(`${setupStartdate}`) ) / 86400000) < 0 ? 'Event End Date has to be later than Event Setup Start Date' : ' '&&  Math.floor(( Date.parse(`${teardownEnddate}`) - Date.parse(`${setupStartdate}`) ) / 86400000) < 0 ?'Event teardown End Date has to be later than Event Setup Start Date' : ' '}
+                                        />
 
                                         <Button
                                             variant="contained"
