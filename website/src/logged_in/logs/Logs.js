@@ -48,7 +48,7 @@ const columns = [
         sortable: true,
         width: 150,
         valueGetter: (params) =>
-            `${params.getValue('time_submitted') || ''}`,
+            parseInt(params.getValue('time_submitted') || 0),
     },
     {
         field: 'eventName',
@@ -95,7 +95,7 @@ const columns = [
         width: 250,
         valueGetter: (params) => {
             try {
-                return  `${params.getValue('prediction_parameters')['setup_days']}`
+                return  parseInt(params.getValue('prediction_parameters')['setup_days']);
             } catch (error) {
                 return '';
             }
@@ -109,7 +109,7 @@ const columns = [
         width: 275,
         valueGetter: (params) => {
             try {
-                return `${params.getValue('prediction_parameters')['teardown_days']}`
+                return parseInt(params.getValue('prediction_parameters')['teardown_days']);
             } catch (error) {
                 return '';
             }
@@ -141,7 +141,7 @@ const columns = [
         width: 225,
         valueGetter: (params) => {
             try {
-                return `${params.getValue('prediction_parameters')['sqft']}`
+                return parseInt(params.getValue('prediction_parameters')['sqft']);
             } catch (error) {
                 return '';
             }
@@ -155,7 +155,7 @@ const columns = [
         width: 225,
         valueGetter: (params) => {
             try {
-                return `${params.getValue('prediction_parameters')['forecast_attendance']}`
+                return parseInt(params.getValue('prediction_parameters')['forecast_attendance']);
             } catch (error) {
                 return '';
             }
@@ -169,7 +169,7 @@ const columns = [
         width: 225,
         valueGetter: (params) => {
             try {
-                return `${Math.floor(( Date.parse(`${params.getValue('prediction_parameters')['end_date']}`) - Date.parse(`${params.getValue('prediction_parameters')['start_date']}`) ) / 86400000)}`
+                return Math.floor(( Date.parse(`${params.getValue('prediction_parameters')['end_date']}`) - Date.parse(`${params.getValue('prediction_parameters')['start_date']}`) ) / 86400000) + 1;
 
             } catch (error) {
                 return '';
@@ -184,7 +184,7 @@ const columns = [
         sortable: true,
         width: 175,
         valueGetter: (params) =>
-            `${params.getValue('prediction_results')['energy_consumption_kwh'].split(".")[0] || ''}`,
+            parseInt(params.getValue('prediction_results')['energy_consumption_kwh'].split(".")[0] || '')
     },
     {
         field: 'dollarCostLowerBound',
@@ -198,7 +198,7 @@ const columns = [
             }
 
             // NOTE: We manually hardcode in MAPE
-            return `${(parseInt(params.getValue('prediction_results')['energy_consumption_cost']) * (1 - 0.2881)).toFixed(2)}`
+            return (parseInt(params.getValue('prediction_results')['energy_consumption_cost']) * (1 - 0.2881)).toFixed(2);
         }
     },
     {
@@ -213,7 +213,7 @@ const columns = [
             }
 
             // NOTE: We manually hardcode in MAPE
-            return `${(parseInt(params.getValue('prediction_results')['energy_consumption_cost']) * (1 + 0.2881)).toFixed(2)}`
+            return (parseInt(params.getValue('prediction_results')['energy_consumption_cost']) * (1 + 0.2881)).toFixed(2)
         }
     }
 ];

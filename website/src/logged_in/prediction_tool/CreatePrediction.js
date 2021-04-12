@@ -74,10 +74,8 @@ function CreatePrediction(props) {
     const [specializedEquipment, setSpecializedEquipment] = useState(0);
     const [startDate, setStartDate] = useState(new Date());
     const [endDate, setEndDate] = useState(new Date());
-    const [setupStartdate, setsetupStartdate] = useState(new Date());
-    const [teardownEnddate, setteardownEnddate] = useState(new Date());
-    const [numSetupDays, setNumSetupDays] = useState(null);
-    const [numTeardownDays, setNumTeardownDays] = useState(null);
+    const [setupStartDate, setsetupStartDate] = useState(new Date());
+    const [teardownEndDate, setteardownEndDate] = useState(new Date());
     const [loading, setLoading] = useState(false);
 
     const [predictedConsumption, setPredictedConsumption] = useState(null);
@@ -86,6 +84,9 @@ function CreatePrediction(props) {
 
     async function createNewPrediction() {
         setLoading(true);
+
+        const numSetupDays = Math.floor(( Date.parse(`${startDate}`) - Date.parse(`${setupStartDate}`) ) / 86400000);
+        const numTeardownDays = Math.floor(( Date.parse(`${teardownEndDate}`) - Date.parse(`${endDate}`) ) / 86400000) + 1;
 
         const api = new EnercastSolutionsAPI(await loadUserFromCache());
         api.createPrediction(name, forecastedAttendance, sqFt, specializedEquipment, format(startDate, "yyyy-MM-dd"), format(endDate, "yyyy-MM-dd"), numSetupDays, numTeardownDays)
@@ -97,10 +98,6 @@ function CreatePrediction(props) {
                 // NOTE: We manually hard code the MAPE here
                 setPredictedCostLowerBound(parseInt(data["energy_consumption_cost"]) * (1 - 0.2881));
                 setPredictedCostUpperBound(parseInt(data["energy_consumption_cost"]) * (1 + 0.2881));
-
-                setNumSetupDays(Math.floor(( Date.parse(`${startDate}`) - Date.parse(`${setupStartdate}`) ) / 86400000));
-
-                setNumTeardownDays(Math.floor(( Date.parse(`${teardownEnddate}`) - Date.parse(`${endDate}`) ) / 86400000));
 
                 setLoading(false);
             })
@@ -139,12 +136,9 @@ function CreatePrediction(props) {
                                                 error={name === ""}
                                                 helperText={name === "" ? 'Empty field!' : ' '}
                                             />
-
-
                                         </Grid>
 
-
-                                        <Grid item xs={12} className={props.classes.inputPadTop}>
+                                        <Grid item xs={12}>
                                             <TextField
                                                 id="sq-ft"
                                                 variant="outlined"
@@ -156,9 +150,7 @@ function CreatePrediction(props) {
                                             />
                                         </Grid>
 
-
-
-                                        <Grid item xs={12} className={props.classes.inputPadTop}>
+                                        <Grid item xs={12}>
                                             <TextField
                                                 id="forecasted-attendance"
                                                 variant="outlined"
@@ -170,9 +162,7 @@ function CreatePrediction(props) {
                                             />
                                         </Grid>
 
-
-
-                                        <Grid item xs={12} className={props.classes.inputPadTop}>
+                                        <Grid item xs={12}>
                                             <FormControl fullWidth >
                                                 <InputLabel id="specialized-equipment-label"
                                                 >Does this event require additional audiovisual and/or telecom equipment?
@@ -193,68 +183,69 @@ function CreatePrediction(props) {
 
                                     <Grid item xs={1}/>
 
-                                    <Grid item xs={5}>
+                                    <Grid item xs={6}>
+                                        <Grid item xs={12}>
+                                            <MuiPickersUtilsProvider utils={DateFnsUtils}>
+                                                <KeyboardDatePicker
+                                                    margin="normal"
+                                                    id="setup-start-date"
+                                                    label="Setup Start Date"
+                                                    format="MM/dd/yyyy"
+                                                    value={setupStartDate}
+                                                    onChange={(date) => {setsetupStartDate(date);}}
+                                                    KeyboardButtonProps={{
+                                                        'aria-label': 'change date',
+                                                    }}
+                                                    className={props.classes.datePicker}
+                                                />
+                                            </MuiPickersUtilsProvider>
+                                        </Grid>
 
+                                        <Grid item xs={12}>
+                                            <MuiPickersUtilsProvider utils={DateFnsUtils}>
+                                                <KeyboardDatePicker
+                                                    margin="normal"
+                                                    id="start-date"
+                                                    label="Event Start Date"
+                                                    format="MM/dd/yyyy"
+                                                    value={startDate}
+                                                    onChange={(date) => {setStartDate(date);}}
+                                                    KeyboardButtonProps={{
+                                                        'aria-label': 'change date',
+                                                    }}
+                                                    className={props.classes.datePicker}
+                                                />
 
-                                        <MuiPickersUtilsProvider utils={DateFnsUtils}>
-                                            <KeyboardDatePicker
-                                                margin="normal"
-                                                id="setup-start-date"
-                                                label="Setup Start Date"
-                                                format="MM/dd/yyyy"
-                                                value={setupStartdate}
-                                                onChange={(date) => {setsetupStartdate(date);}}
-                                                KeyboardButtonProps={{
-                                                    'aria-label': 'change date',
-                                                }}
-                                                className={props.classes.datePicker}
-                                            />
-                                            <KeyboardDatePicker
-                                                margin="normal"
-                                                id="start-date"
-                                                label="Event Start Date"
-                                                format="MM/dd/yyyy"
-                                                value={startDate}
-                                                onChange={(date) => {setStartDate(date);}}
-                                                KeyboardButtonProps={{
-                                                    'aria-label': 'change date',
-                                                }}
+                                                <KeyboardDatePicker
+                                                    margin="normal"
+                                                    id="end-date"
+                                                    label="Event End Date"
+                                                    format="MM/dd/yyyy"
+                                                    value={endDate}
+                                                    onChange={(date) => {setEndDate(date);}}
+                                                    KeyboardButtonProps={{
+                                                        'aria-label': 'change date',
+                                                    }}
+                                                />
+                                            </MuiPickersUtilsProvider>
+                                        </Grid>
 
-                                            />
+                                        <Grid item xs={12}>
+                                            <MuiPickersUtilsProvider utils={DateFnsUtils}>
+                                                <KeyboardDatePicker
+                                                    margin="normal"
+                                                    id="teardown-end-date"
+                                                    label="Teardown End Date"
+                                                    format="MM/dd/yyyy"
+                                                    value={teardownEndDate}
+                                                    onChange={(date) => {setteardownEndDate(date);}}
+                                                    KeyboardButtonProps={{
+                                                        'aria-label': 'change date',
+                                                    }}
 
-                                            <KeyboardDatePicker
-                                                margin="normal"
-                                                id="end-date"
-                                                label="Event End Date"
-                                                format="MM/dd/yyyy"
-                                                value={endDate}
-                                                onChange={(date) => {setEndDate(date);}}
-                                                KeyboardButtonProps={{
-                                                    'aria-label': 'change date',
-                                                }}
-                                            />
-                                            <KeyboardDatePicker
-                                                margin="normal"
-                                                id="teardown-end-date"
-                                                label="Teardown End Date"
-                                                format="MM/dd/yyyy"
-                                                value={teardownEnddate}
-                                                onChange={(date) => {setteardownEnddate(date);}}
-                                                KeyboardButtonProps={{
-                                                    'aria-label': 'change date',
-                                                }}
-
-                                            />
-                                        </MuiPickersUtilsProvider>
-
-
-
-                                        <TextField
-                                        id="error message"
-                                        value = {"Error Message"}
-                                        error={Math.floor(( Date.parse(`${endDate}`) - Date.parse(`${startDate}`) ) / 86400000) < 0 && Math.floor(( Date.parse(`${endDate}`) - Date.parse(`${setupStartdate}`) ) / 86400000) < 0 && Math.floor(( Date.parse(`${teardownEnddate}`) - Date.parse(`${setupStartdate}`) ) / 86400000) < 0 }
-                                        helperText={Math.floor(( Date.parse(`${endDate}`) - Date.parse(`${startDate}`) ) / 86400000) < 0 ? 'Event End Date has to be later than Event Start Date' : ' ' && Math.floor(( Date.parse(`${endDate}`) - Date.parse(`${setupStartdate}`) ) / 86400000) < 0 ? 'Event End Date has to be later than Event Setup Start Date' : ' '&&  Math.floor(( Date.parse(`${teardownEnddate}`) - Date.parse(`${setupStartdate}`) ) / 86400000) < 0 ?'Event teardown End Date has to be later than Event Setup Start Date' : ' '}
-                                        />
+                                                />
+                                            </MuiPickersUtilsProvider>
+                                        </Grid>
 
                                         <Button
                                             variant="contained"
