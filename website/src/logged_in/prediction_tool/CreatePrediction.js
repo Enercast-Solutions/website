@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { useState } from 'react';
 import { withStyles } from '@material-ui/core';
@@ -22,10 +21,9 @@ import { loadUserFromCache } from '../../shared/auth';
 import DateFnsUtils from '@date-io/date-fns';
 import NumberFormat from 'react-number-format';
 import format from 'date-fns/format';
-
+import MuiAlert from '@material-ui/lab/Alert';
 import Snackbar from '@material-ui/core/Snackbar';
 import ClickAwayListener from '@material-ui/core/ClickAwayListener';
-
 import {
   MuiPickersUtilsProvider,
   KeyboardTimePicker,
@@ -74,6 +72,10 @@ const styles = theme => ({
     }
 });
 
+function Alert(props) {
+  return <MuiAlert elevation={6} variant="filled" {...props} />;
+}
+
 function CreatePrediction(props) {
     const [name, setName] = useState(null);
     const [forecastedAttendance, setForecastedAttendance] = useState(null);
@@ -87,46 +89,45 @@ function CreatePrediction(props) {
     const [predictedConsumption, setPredictedConsumption] = useState(null);
     const [predictedCostLowerBound, setPredictedCostLowerBound] = useState(null);
     const [predictedCostUpperBound, setPredictedCostUpperBound] = useState(null);
-
-    const [open, setOpen] = React.useState(false);
+    const [snackbarOpen, setSnackbarOpen] = useState(false);
 
     const handleClick = () => {
-        setOpen(true);
+        setSnackbarOpen(true);
     };
 
-
-
+    function datesNotPassValidation() {
+        return Math.floor(( Date.parse(`${startDate}`) - Date.parse(`${setupStartDate}`) ) / 86400000) < 0 || Math.floor(( Date.parse(`${endDate}`) - Date.parse(`${setupStartDate}`) ) / 86400000) < 0 || Math.floor(( Date.parse(`${teardownEndDate}`) - Date.parse(`${setupStartDate}`) ) / 86400000) < 0|| Math.floor(( Date.parse(`${endDate}`) - Date.parse(`${startDate}`) ) / 86400000) < 0|| Math.floor(( Date.parse(`${endDate}`) - Date.parse(`${setupStartDate}`) ) / 86400000) < 0||Math.floor(( Date.parse(`${teardownEndDate}`) - Date.parse(`${setupStartDate}`) ) / 86400000) < 0||Math.floor(( Date.parse(`${teardownEndDate}`) - Date.parse(`${startDate}`) ) / 86400000) < 0||Math.floor(( Date.parse(`${teardownEndDate}`) - Date.parse(`${endDate}`) ) / 86400000) < 0;
+    }
 
     async function createNewPrediction() {
-        setLoading(true);
-        setOpen(false);
-        if (Math.floor(( Date.parse(`${startDate}`) - Date.parse(`${setupStartDate}`) ) / 86400000) < 0 || Math.floor(( Date.parse(`${endDate}`) - Date.parse(`${setupStartDate}`) ) / 86400000) < 0 || Math.floor(( Date.parse(`${teardownEndDate}`) - Date.parse(`${setupStartDate}`) ) / 86400000) < 0|| Math.floor(( Date.parse(`${endDate}`) - Date.parse(`${startDate}`) ) / 86400000) < 0|| Math.floor(( Date.parse(`${endDate}`) - Date.parse(`${setupStartDate}`) ) / 86400000) < 0||Math.floor(( Date.parse(`${teardownEndDate}`) - Date.parse(`${setupStartDate}`) ) / 86400000) < 0||Math.floor(( Date.parse(`${teardownEndDate}`) - Date.parse(`${startDate}`) ) / 86400000) < 0||Math.floor(( Date.parse(`${teardownEndDate}`) - Date.parse(`${endDate}`) ) / 86400000) < 0) {
-            setOpen(true);
+        if (datesNotPassValidation()) {
+            console.log("ifuckinghatethis");
+            setSnackbarOpen(true);
+        } else {
+            setLoading(true);
+
+            const numSetupDays = Math.floor(( Date.parse(`${startDate}`) - Date.parse(`${setupStartDate}`) ) / 86400000);
+            const numTeardownDays = Math.floor(( Date.parse(`${teardownEndDate}`) - Date.parse(`${endDate}`) ) / 86400000) + 1;
+
+            const api = new EnercastSolutionsAPI(await loadUserFromCache());
+            api.createPrediction(name, forecastedAttendance, sqFt, specializedEquipment, format(startDate, "yyyy-MM-dd"), format(endDate, "yyyy-MM-dd"), numSetupDays, numTeardownDays)
+                .then((response) => {
+                    return response.json();
+                })
+                .then((data) => {
+                    setPredictedConsumption(data["energy_consumption_kwh"]);
+                    // NOTE: We manually hard code the MAPE here
+                    setPredictedCostLowerBound(parseInt(data["energy_consumption_cost"]) * (1 - 0.2881));
+                    setPredictedCostUpperBound(parseInt(data["energy_consumption_cost"]) * (1 + 0.2881));
+
+                    setLoading(false);
+                })
+                .catch((e) => {
+                    console.log(e);
+
+                    setLoading(false);
+                });
         }
-        const numSetupDays = Math.floor(( Date.parse(`${startDate}`) - Date.parse(`${setupStartDate}`) ) / 86400000);
-        const numTeardownDays = Math.floor(( Date.parse(`${teardownEndDate}`) - Date.parse(`${endDate}`) ) / 86400000) + 1;
-
-        const api = new EnercastSolutionsAPI(await loadUserFromCache());
-        api.createPrediction(name, forecastedAttendance, sqFt, specializedEquipment, format(startDate, "yyyy-MM-dd"), format(endDate, "yyyy-MM-dd"), numSetupDays, numTeardownDays)
-
-            .then((response) => {
-                return response.json();
-            })
-            .then((data) => {
-                setPredictedConsumption(data["energy_consumption_kwh"]);
-                // NOTE: We manually hard code the MAPE here
-                setPredictedCostLowerBound(parseInt(data["energy_consumption_cost"]) * (1 - 0.2881));
-                setPredictedCostUpperBound(parseInt(data["energy_consumption_cost"]) * (1 + 0.2881));
-
-                setLoading(false);
-            })
-            .catch((e) => {
-                console.log(e);
-
-                setLoading(false);
-            });
-
-
     }
 
     return (
@@ -152,20 +153,19 @@ function CreatePrediction(props) {
 
                                                 fullWidth
                                                 onChange={(event) => setName(event.target.value)}
-                                                error={name === ""}
-                                                helperText={name === "" ? 'Empty field!' : ' '}
+                                                error={name === "" || name === null}
                                             />
                                         </Grid>
 
-                                        <Grid item xs={12}>
+                                        <Grid item xs={12} className={props.classes.inputPadTop}>
                                             <TextField
                                                 id="sq-ft"
                                                 variant="outlined"
                                                 label="Square Footage Utilized"
                                                 fullWidth
                                                 onChange={(event) => setSqFt(event.target.value)}
-                                                error={sqFt === "" || !Number.isFinite(parseInt(sqFt))}
-                                                helperText={sqFt === "" ? 'Empty field!' : !Number.isFinite(parseInt(sqFt))? ' sqFT must be a number' :""}
+                                                error={!Number.isFinite(parseInt(sqFt))}
+                                                helperText={!Number.isFinite(parseInt(sqFt)) ? 'Square footage must be a number' : ""}
                                             />
                                         </Grid>
 
@@ -176,12 +176,12 @@ function CreatePrediction(props) {
                                                 label="Forecasted Attendance"
                                                 fullWidth
                                                 onChange={(event) => setForecastedAttendance(event.target.value)}
-                                                error={forecastedAttendance === ""||!Number.isFinite(parseInt(forecastedAttendance))}
-                                                helperText={forecastedAttendance === "" ? 'Empty field!' :!Number.isFinite(parseInt(forecastedAttendance)) ? 'Forecast Attendance must be a number ':""}
+                                                error={!Number.isFinite(parseInt(forecastedAttendance))}
+                                                helperText={!Number.isFinite(parseInt(forecastedAttendance)) ? 'Forecasted attendance must be a number' : ""}
                                             />
                                         </Grid>
 
-                                        <Grid item xs={12}>
+                                        <Grid item xs={12} className={props.classes.inputPadTop}>
                                             <FormControl fullWidth >
                                                 <InputLabel id="specialized-equipment-label"
                                                 >Does this event require additional audiovisual and/or telecom equipment?
@@ -274,15 +274,16 @@ function CreatePrediction(props) {
                                         >
                                             {loading && <CircularProgress color="white" />} Create Prediction
                                         </Button>
+
                                         <Snackbar
-                                            open={open}
-                                            autoHideDuration={3000}
-                                            onClose={() => setOpen(false)}
-                                            message="Date Error. The End date cannot be earlier than Start date."
-
-                                        />
-
-
+                                            open={snackbarOpen}
+                                            autoHideDuration={50000}
+                                            onClose={() => setSnackbarOpen(false)}
+                                        >
+                                            <Alert severity="error">
+                                                You have form validation errors. Please ensure event start date occurs after setup start date, and teardown end date occurs after event end date.
+                                            </Alert>
+                                        </Snackbar>
 
                                         {predictedConsumption && (
                                             <>
