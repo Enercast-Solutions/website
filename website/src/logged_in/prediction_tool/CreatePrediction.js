@@ -21,9 +21,6 @@ import { loadUserFromCache } from '../../shared/auth';
 import DateFnsUtils from '@date-io/date-fns';
 import NumberFormat from 'react-number-format';
 import format from 'date-fns/format';
-import MuiAlert from '@material-ui/lab/Alert';
-import Snackbar from '@material-ui/core/Snackbar';
-import ClickAwayListener from '@material-ui/core/ClickAwayListener';
 import {
   MuiPickersUtilsProvider,
   KeyboardTimePicker,
@@ -31,8 +28,6 @@ import {
 } from '@material-ui/pickers';
 import Divider from '@material-ui/core/Divider';
 
-<link ref="stylesheet" type="text/css" href="dist/snackbar.min.css" />;
-<script src="dist/snackbar.min.js"></script>;
 
 const styles = theme => ({
     root: {
@@ -72,10 +67,6 @@ const styles = theme => ({
     }
 });
 
-function Alert(props) {
-  return <MuiAlert elevation={6} variant="filled" {...props} />;
-}
-
 function CreatePrediction(props) {
     const [name, setName] = useState(null);
     const [forecastedAttendance, setForecastedAttendance] = useState(null);
@@ -86,48 +77,37 @@ function CreatePrediction(props) {
     const [setupStartDate, setsetupStartDate] = useState(new Date());
     const [teardownEndDate, setteardownEndDate] = useState(new Date());
     const [loading, setLoading] = useState(false);
+
     const [predictedConsumption, setPredictedConsumption] = useState(null);
     const [predictedCostLowerBound, setPredictedCostLowerBound] = useState(null);
     const [predictedCostUpperBound, setPredictedCostUpperBound] = useState(null);
-    const [snackbarOpen, setSnackbarOpen] = useState(false);
-
-    const handleClick = () => {
-        setSnackbarOpen(true);
-    };
-
-    function datesNotPassValidation() {
-        return Math.floor(( Date.parse(`${startDate}`) - Date.parse(`${setupStartDate}`) ) / 86400000) < 0 || Math.floor(( Date.parse(`${endDate}`) - Date.parse(`${setupStartDate}`) ) / 86400000) < 0 || Math.floor(( Date.parse(`${teardownEndDate}`) - Date.parse(`${setupStartDate}`) ) / 86400000) < 0|| Math.floor(( Date.parse(`${endDate}`) - Date.parse(`${startDate}`) ) / 86400000) < 0|| Math.floor(( Date.parse(`${endDate}`) - Date.parse(`${setupStartDate}`) ) / 86400000) < 0||Math.floor(( Date.parse(`${teardownEndDate}`) - Date.parse(`${setupStartDate}`) ) / 86400000) < 0||Math.floor(( Date.parse(`${teardownEndDate}`) - Date.parse(`${startDate}`) ) / 86400000) < 0||Math.floor(( Date.parse(`${teardownEndDate}`) - Date.parse(`${endDate}`) ) / 86400000) < 0;
-    }
 
     async function createNewPrediction() {
-        if (datesNotPassValidation()) {
-            console.log("ifuckinghatethis");
-            setSnackbarOpen(true);
-        } else {
-            setLoading(true);
+        setLoading(true);
 
-            const numSetupDays = Math.floor(( Date.parse(`${startDate}`) - Date.parse(`${setupStartDate}`) ) / 86400000);
-            const numTeardownDays = Math.floor(( Date.parse(`${teardownEndDate}`) - Date.parse(`${endDate}`) ) / 86400000) + 1;
+        const numSetupDays = Math.floor(( Date.parse(`${startDate}`) - Date.parse(`${setupStartDate}`) ) / 86400000) + 1;
+        const numTeardownDays = Math.floor(( Date.parse(`${teardownEndDate}`) - Date.parse(`${endDate}`) ) / 86400000) + 1;
 
-            const api = new EnercastSolutionsAPI(await loadUserFromCache());
-            api.createPrediction(name, forecastedAttendance, sqFt, specializedEquipment, format(startDate, "yyyy-MM-dd"), format(endDate, "yyyy-MM-dd"), numSetupDays, numTeardownDays)
-                .then((response) => {
-                    return response.json();
-                })
-                .then((data) => {
-                    setPredictedConsumption(data["energy_consumption_kwh"]);
-                    // NOTE: We manually hard code the MAPE here
-                    setPredictedCostLowerBound(parseInt(data["energy_consumption_cost"]) * (1 - 0.2881));
-                    setPredictedCostUpperBound(parseInt(data["energy_consumption_cost"]) * (1 + 0.2881));
+        const api = new EnercastSolutionsAPI(await loadUserFromCache());
+        api.createPrediction(name, forecastedAttendance, sqFt, specializedEquipment, format(startDate, "yyyy-MM-dd"), format(endDate, "yyyy-MM-dd"), numSetupDays, numTeardownDays)
+            .then((response) => {
+                return response.json();
+            })
+            .then((data) => {
+                setPredictedConsumption(data["energy_consumption_kwh"]);
+                // NOTE: We manually hard code the MAPE here
+                setPredictedCostLowerBound(parseInt(data["energy_consumption_cost"]) * (1 - 0.2881));
+                setPredictedCostUpperBound(parseInt(data["energy_consumption_cost"]) * (1 + 0.2881));
 
-                    setLoading(false);
-                })
-                .catch((e) => {
-                    console.log(e);
+                setLoading(false);
+            })
+            .catch((e) => {
+                console.log(e);
 
-                    setLoading(false);
-                });
-        }
+                setLoading(false);
+            });
+
+
     }
 
     return (
@@ -153,35 +133,36 @@ function CreatePrediction(props) {
 
                                                 fullWidth
                                                 onChange={(event) => setName(event.target.value)}
-                                                error={name === "" || name === null}
+                                                error={name === ""}
+                                                helperText={name === "" ? 'Empty field!' : ' '}
                                             />
                                         </Grid>
 
-                                        <Grid item xs={12} className={props.classes.inputPadTop}>
+                                        <Grid item xs={12}>
                                             <TextField
                                                 id="sq-ft"
                                                 variant="outlined"
                                                 label="Square Footage Utilized"
                                                 fullWidth
                                                 onChange={(event) => setSqFt(event.target.value)}
-                                                error={!Number.isFinite(parseInt(sqFt))}
-                                                helperText={!Number.isFinite(parseInt(sqFt)) ? 'Square footage must be a number' : ""}
+                                                error={sqFt === ""}
+                                                helperText={sqFt === "" ? 'Empty field!' : ' '}
                                             />
                                         </Grid>
 
-                                        <Grid item xs={12} className={props.classes.inputPadTop}>
+                                        <Grid item xs={12}>
                                             <TextField
                                                 id="forecasted-attendance"
                                                 variant="outlined"
                                                 label="Forecasted Attendance"
                                                 fullWidth
                                                 onChange={(event) => setForecastedAttendance(event.target.value)}
-                                                error={!Number.isFinite(parseInt(forecastedAttendance))}
-                                                helperText={!Number.isFinite(parseInt(forecastedAttendance)) ? 'Forecasted attendance must be a number' : ""}
+                                                error={forecastedAttendance === ""}
+                                                helperText={forecastedAttendance === "" ? 'Empty field!' : ' '}
                                             />
                                         </Grid>
 
-                                        <Grid item xs={12} className={props.classes.inputPadTop}>
+                                        <Grid item xs={12}>
                                             <FormControl fullWidth >
                                                 <InputLabel id="specialized-equipment-label"
                                                 >Does this event require additional audiovisual and/or telecom equipment?
@@ -274,16 +255,6 @@ function CreatePrediction(props) {
                                         >
                                             {loading && <CircularProgress color="white" />} Create Prediction
                                         </Button>
-
-                                        <Snackbar
-                                            open={snackbarOpen}
-                                            autoHideDuration={50000}
-                                            onClose={() => setSnackbarOpen(false)}
-                                        >
-                                            <Alert severity="error">
-                                                You have form validation errors. Please ensure event start date occurs after setup start date, and teardown end date occurs after event end date.
-                                            </Alert>
-                                        </Snackbar>
 
                                         {predictedConsumption && (
                                             <>
