@@ -106,7 +106,7 @@ function CreatePrediction(props) {
         } else {
             setLoading(true);
 
-            const numSetupDays = Math.floor(( Date.parse(`${startDate}`) - Date.parse(`${setupStartDate}`) ) / 86400000);
+            const numSetupDays = Math.floor(( Date.parse(`${startDate}`) - Date.parse(`${setupStartDate}`) ) / 86400000) + 1;
             const numTeardownDays = Math.floor(( Date.parse(`${teardownEndDate}`) - Date.parse(`${endDate}`) ) / 86400000) + 1;
 
             const api = new EnercastSolutionsAPI(await loadUserFromCache());
