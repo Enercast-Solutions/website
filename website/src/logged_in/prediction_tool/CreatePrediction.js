@@ -163,7 +163,7 @@ function CreatePrediction(props) {
                                                 variant="outlined"
                                                 label="Square Footage Utilized"
                                                 fullWidth
-                                                onChange={(event) => setSqFt(event.target.value)}
+                                                onChange={(event) => setSqFt(event.target.value.replace(/,/g, ''))}
                                                 error={!Number.isFinite(parseInt(sqFt))}
                                                 helperText={!Number.isFinite(parseInt(sqFt)) ? 'Square footage must be a number' : ""}
                                             />
@@ -175,7 +175,7 @@ function CreatePrediction(props) {
                                                 variant="outlined"
                                                 label="Forecasted Attendance"
                                                 fullWidth
-                                                onChange={(event) => setForecastedAttendance(event.target.value)}
+                                                onChange={(event) => setForecastedAttendance(event.target.value.replace(/,/g, ''))}
                                                 error={!Number.isFinite(parseInt(forecastedAttendance))}
                                                 helperText={!Number.isFinite(parseInt(forecastedAttendance)) ? 'Forecasted attendance must be a number' : ""}
                                             />

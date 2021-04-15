@@ -101,7 +101,7 @@ function Home(props) {
                             variant="h5"
                             className={props.classes.subtext}
                         >
-                            Enercast Solutions is a cloud-based Event Space Energy Prediction Tool that integrates historical energy data with your utility tariff to help improve event profitability and reduce energy costs.
+                            Enercast Solutions is a cloud-based Event Space Energy Prediction Tool that integrates historical energy data with your utility expenses to help improve event profitability and reduce energy costs.
                         </Typography>
                     </Grid>
                 </Grid>
@@ -180,7 +180,7 @@ function Home(props) {
                         </Typography>
                     </Grid>
                 </Grid>
-             
+
              <Footer/>
             </div>
         </Container>
