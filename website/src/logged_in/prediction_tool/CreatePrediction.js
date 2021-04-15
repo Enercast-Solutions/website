@@ -89,6 +89,7 @@ function CreatePrediction(props) {
     const [predictedConsumption, setPredictedConsumption] = useState(null);
     const [predictedCostLowerBound, setPredictedCostLowerBound] = useState(null);
     const [predictedCostUpperBound, setPredictedCostUpperBound] = useState(null);
+    const [baselineCost, setBaselineCost] = useState(null);
     const [snackbarOpen, setSnackbarOpen] = useState(false);
 
     const handleClick = () => {
@@ -119,6 +120,7 @@ function CreatePrediction(props) {
                     // NOTE: We manually hard code the MAPE here
                     setPredictedCostLowerBound(parseInt(data["energy_consumption_cost"]) * (1 - 0.2881));
                     setPredictedCostUpperBound(parseInt(data["energy_consumption_cost"]) * (1 + 0.2881));
+                    setBaselineCost(data["energy_consumption_baseline_cost"]);
 
                     setLoading(false);
                 })
@@ -330,6 +332,24 @@ function CreatePrediction(props) {
                                                         thousandSeparator={true}
                                                         decimalScale={0}
                                                         renderText={formattedValue => <>Lower-bound: ${formattedValue}</>}
+                                                    />
+                                                </Typography>
+                                            </>
+                                        )}
+
+                                        {baselineCost && (
+                                            <>
+                                                <Typography className={props.classes.inputPadTop}>
+                                                    Baseline Cost:
+                                                </Typography>
+
+                                                <Typography className={props.classes.predictedConsumptionText}>
+                                                    <NumberFormat
+                                                        value={baselineCost}
+                                                        displayType={'text'}
+                                                        thousandSeparator={true}
+                                                        decimalScale={0}
+                                                        renderText={formattedValue => <>Baseline: ${formattedValue}</>}
                                                     />
                                                 </Typography>
                                             </>

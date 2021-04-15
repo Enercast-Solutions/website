@@ -213,7 +213,22 @@ const columns = [
             }
 
             // NOTE: We manually hardcode in MAPE
-            return (parseInt(params.getValue('prediction_results')['energy_consumption_cost']) * (1 + 0.2881)).toFixed(2)
+            return (parseInt(params.getValue('prediction_results')['energy_consumption_cost']) * (1 + 0.2881)).toFixed(2);
+        }
+    },
+    {
+        field: 'dollarCostBaseline',
+        headerName: 'Cost Baseline ($)',
+        description: 'Power Consumption Cost. Baseline.',
+        sortable: true,
+        width: 200,
+        valueGetter: (params) => {
+            if (!params.getValue('prediction_results')['energy_consumption_baseline_cost']) {
+                return '';
+            }
+
+            // NOTE: We manually hardcode in MAPE
+            return parseInt(params.getValue('prediction_results')['energy_consumption_baseline_cost']).toFixed(2);
         }
     }
 ];
